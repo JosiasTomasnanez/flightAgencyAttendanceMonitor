@@ -103,16 +103,15 @@ public class PoliticaAgenciaVuelo implements Politica {
    * @return la transición seleccionada según la prioridad.
    */
   private int politicaPriorizada(int i, int j) {
-    if (i == 2 || i == 3) {
-      double porcentajeActualT2 =
-          (double) countT2 / (countT2 + countT3 + 1); // Evita división por 0
+    if (i == 2) {
+      if ((countT2 + countT3) == 0) return i;
+      double porcentajeActualT2 = (double) countT2 / (countT2 + countT3); // Evita división por 0
       return porcentajeActualT2 < 0.75 ? i : j; // 75% de prioridad para T2
-    } else if (i == 6 || i == 7) {
-      double porcentajeActualT6 =
-          (double) countT6 / (countT6 + countT7 + 1); // Evita división por 0
+    } else {
+      if ((countT6 + countT7) == 0) return i;
+      double porcentajeActualT6 = (double) countT6 / (countT6 + countT7); // Evita división por 0
       return porcentajeActualT6 < 0.80 ? i : j; // 80% de prioridad para T6
     }
-    return i; // Por defecto, retorna i
   }
 
   /**

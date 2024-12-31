@@ -48,8 +48,12 @@ public class Main {
           {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
           {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
         };
+    ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
+    for (int i = 0; matrizIncidencia[0].length > i; i++) {
+      alfaybetas.add(new AlfaYBeta(10, 1200));
+    }
     int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
-    Monitor.getInstance(marcado, matrizIncidencia, politica);
+    Monitor.getInstance(marcado, matrizIncidencia, politica, alfaybetas);
 
     {
       PantallaCarga pantalla = new PantallaCarga();
@@ -60,12 +64,11 @@ public class Main {
     OurThreadFactory factory = new OurThreadFactory();
     ArrayList<Thread> hilos = new ArrayList<>();
 
-    // Creacion de Hilos
-
     // 1 hilo por agente
     for (int i = 0; i < 1; i++)
       hilos.add(
           factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
+
     for (int i = 0; i < 1; i++)
       hilos.add(
           factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));

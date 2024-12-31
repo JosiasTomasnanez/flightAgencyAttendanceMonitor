@@ -1,6 +1,4 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,7 +67,7 @@ public class Log implements Runnable {
   @Override
   public void run() {
     while (true) {
-      if (Monitor.getInstance().termino) {
+      if (Monitor.getInstance().isFinish()) {
         pw.println(
             "tiempo en milis: "
                 + (System.currentTimeMillis() - tiempo)
@@ -90,11 +88,10 @@ public class Log implements Runnable {
                 + Monitor.getInstance().getMarcado()[14]
                 + "\n");
         imprimirTransiciones();
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
+        comprobarSecuencia();
+        pw.println(
+            "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
+                + Monitor.getInstance().getBetaErrors());
         return;
       }
       int[] marcado = Monitor.getInstance().getMarcado();
@@ -134,6 +131,44 @@ public class Log implements Runnable {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private void comprobarSecuencia() {
+    pw.println();
+    try {
+      // Ruta al intérprete de Python y al script
+      String pythonPath = "python3";
+      String scriptPath = "PetriFlightAnalyzer.py";
+
+      String parametro = Monitor.getInstance().getSecuencia();
+
+      // Crear el proceso
+      ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath, parametro);
+      processBuilder.redirectErrorStream(true);
+      Process process = null;
+      try {
+        process = processBuilder.start();
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      String line;
+      while (true) {
+        try {
+          if ((line = reader.readLine()) == null) break;
+        } catch (IOException ex) {
+          throw new RuntimeException(ex);
+        }
+        pw.println(line);
+      }
+      try {
+        process.waitFor();
+      } catch (InterruptedException ex) {
+        throw new RuntimeException(ex);
+      }
+    } catch (RuntimeException e) {
+      throw new RuntimeException(e);
     }
   }
 }
