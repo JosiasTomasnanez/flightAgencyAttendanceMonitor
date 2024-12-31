@@ -137,38 +137,49 @@ public class Log implements Runnable {
   private void comprobarSecuencia() {
     pw.println();
     try {
-      // Ruta al intérprete de Python y al script
-      String pythonPath = "python3";
-      String scriptPath = "PetriFlightAnalyzer.py";
+      // Detectar dinámicamente el intérprete de Python
+      String pythonPath = detectPythonInterpreter();
+      if (pythonPath == null) {
+        return;
+      }
 
+      String scriptPath = "PetriFlightAnalyzer.py";
       String parametro = Monitor.getInstance().getSecuencia();
 
       // Crear el proceso
       ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath, parametro);
       processBuilder.redirectErrorStream(true);
-      Process process = null;
-      try {
-        process = processBuilder.start();
-      } catch (IOException e) {
-        throw new RuntimeException(e);
-      }
+      Process process = processBuilder.start();
+
       BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
       String line;
-      while (true) {
-        try {
-          if ((line = reader.readLine()) == null) break;
-        } catch (IOException ex) {
-          throw new RuntimeException(ex);
-        }
+      while ((line = reader.readLine()) != null) {
         pw.println(line);
       }
-      try {
-        process.waitFor();
-      } catch (InterruptedException ex) {
-        throw new RuntimeException(ex);
-      }
-    } catch (RuntimeException e) {
-      throw new RuntimeException(e);
+
+      process.waitFor();
+    } catch (IOException | InterruptedException e) {
+      throw new RuntimeException("Error al ejecutar el script de Python.", e);
     }
+  }
+
+  private String detectPythonInterpreter() {
+    String[] interpreters = {"python3", "python", "python2"};
+    for (String interpreter : interpreters) {
+      try {
+        ProcessBuilder processBuilder = new ProcessBuilder(interpreter, "--version");
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+
+        // Leer la salida para comprobar si es válido
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        if (reader.readLine() != null) {
+          return interpreter; // Devolver el primer intérprete válido
+        }
+      } catch (IOException ignored) {
+        // Ignorar y probar el siguiente intérprete
+      }
+    }
+    return null; // No se encontró un intérprete válido
   }
 }
