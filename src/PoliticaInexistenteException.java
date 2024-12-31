@@ -6,10 +6,11 @@
  */
 public class PoliticaInexistenteException extends Exception {
 
-    /**
-     * Crea una nueva instancia de {@code PoliticaInexistenteException} sin un mensaje de error adicional.
-     */
-  public PoliticaInexistenteException(){
-      super();
+  /**
+   * Crea una nueva instancia de {@code PoliticaInexistenteException} sin un mensaje de error
+   * adicional.
+   */
+  public PoliticaInexistenteException() {
+    super();
   }
 }

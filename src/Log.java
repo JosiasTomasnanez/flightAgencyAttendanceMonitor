@@ -89,7 +89,9 @@ public class Log implements Runnable {
                 + "\n");
         imprimirTransiciones();
         comprobarSecuencia();
-        pw.println("\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"+Monitor.getInstance().getBetaErrors());
+        pw.println(
+            "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
+                + Monitor.getInstance().getBetaErrors());
         return;
       }
       int[] marcado = Monitor.getInstance().getMarcado();
@@ -134,7 +136,7 @@ public class Log implements Runnable {
 
   private void comprobarSecuencia() {
     pw.println();
-    try{
+    try {
       // Ruta al intérprete de Python y al script
       String pythonPath = "python3";
       String scriptPath = "PetriFlightAnalyzer.py";
@@ -161,13 +163,12 @@ public class Log implements Runnable {
         pw.println(line);
       }
       try {
-      process.waitFor();
+        process.waitFor();
       } catch (InterruptedException ex) {
         throw new RuntimeException(ex);
       }
     } catch (RuntimeException e) {
       throw new RuntimeException(e);
     }
-
   }
 }

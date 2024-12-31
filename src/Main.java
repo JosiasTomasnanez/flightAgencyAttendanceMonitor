@@ -31,28 +31,28 @@ public class Main {
     }
 
     int[][] matrizIncidencia =
-            new int[][]{
-                    {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-                    {-1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {-1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0},
-                    {0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0},
-                    {0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
-            };
-    ArrayList<AlfaYBeta> alfaybetas= new ArrayList<>();
-    for(int i = 0; matrizIncidencia[0].length > i; i++){
-      alfaybetas.add(new AlfaYBeta(10,1200));
+        new int[][] {
+          {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+          {-1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0},
+          {-1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0},
+          {0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0},
+          {0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0},
+          {0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
+          {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
+        };
+    ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
+    for (int i = 0; matrizIncidencia[0].length > i; i++) {
+      alfaybetas.add(new AlfaYBeta(10, 1200));
     }
-    int[] marcado = new int[]{186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
+    int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
     Monitor.getInstance(marcado, matrizIncidencia, politica, alfaybetas);
 
     {
@@ -67,11 +67,11 @@ public class Main {
     // 1 hilo por agente
     for (int i = 0; i < 1; i++)
       hilos.add(
-              factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
+          factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
 
     for (int i = 0; i < 1; i++)
       hilos.add(
-              factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));
+          factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));
 
     // 1 Hilo encargado de la cancelacion
     for (int i = 0; i < 1; i++)
@@ -100,6 +100,5 @@ public class Main {
       }
     }
     System.out.println("Fin de la ejecucion");
-
   }
 }
