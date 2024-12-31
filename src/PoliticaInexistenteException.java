@@ -5,5 +5,11 @@
  * política, indicando que la política solicitada no está definida o no es válida.
  */
 public class PoliticaInexistenteException extends Exception {
-  // No es necesario agregar código adicional, ya que hereda de la clase Exception.
+
+    /**
+     * Crea una nueva instancia de {@code PoliticaInexistenteException} sin un mensaje de error adicional.
+     */
+  public PoliticaInexistenteException(){
+      super();
+  }
 }
