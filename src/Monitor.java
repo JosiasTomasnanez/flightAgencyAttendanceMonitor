@@ -32,8 +32,7 @@ public class Monitor implements MonitorInterface {
    * @param politica Política para manejo de conflictos.
    * @throws IllegalArgumentException Si los parámetros son inválidos.
    */
-  private Monitor(
-      int[] marcado, int[][] matrizIncidencia, Politica politica, ArrayList<AlfaYBeta> alfaYBetas) {
+  private Monitor(int[] marcado, int[][] matrizIncidencia, Politica politica , ArrayList<AlfaYBeta> alfaYBetas) {
     if (marcado.length != matrizIncidencia.length) {
       throw new IllegalArgumentException(
           "El tamaño del marcado debe coincidir con el número de filas de la matriz de"
@@ -44,9 +43,8 @@ public class Monitor implements MonitorInterface {
           "La matriz de incidencia debe ser válida y contener al menos una transición.");
     }
     if (alfaYBetas.size() < matrizIncidencia[0].length) {
-      throw new IllegalArgumentException(
-          "La lista de alfas y betas debe contener la misma cantidad de"
-              + "elementos que las transiciones en la red de petri");
+      throw new IllegalArgumentException("La lista de alfas y betas debe contener la misma cantidad de" +
+              "elementos que las transiciones en la red de petri");
     }
     if (politica == null) {
       throw new IllegalArgumentException("La política no puede ser nula.");
@@ -57,7 +55,7 @@ public class Monitor implements MonitorInterface {
             "El marcado inicial no puede contener valores negativos.");
       }
     }
-    this.alfaYBetas = alfaYBetas;
+    this.alfaYBetas=alfaYBetas;
     this.marcado = marcado;
     this.matrizIncidencia = matrizIncidencia;
     this.politica = politica;
@@ -90,8 +88,7 @@ public class Monitor implements MonitorInterface {
    * @param politica Política para manejo de conflictos.
    * @return Instancia única del monitor.
    */
-  public static Monitor getInstance(
-      int[] marcado, int[][] matrizIncidencia, Politica politica, ArrayList<AlfaYBeta> alfaYBetas) {
+  public static Monitor getInstance(int[] marcado, int[][] matrizIncidencia, Politica politica, ArrayList<AlfaYBeta> alfaYBetas){
     if (m == null) {
       m = new Monitor(marcado, matrizIncidencia, politica, alfaYBetas);
     }
@@ -105,8 +102,9 @@ public class Monitor implements MonitorInterface {
    * @return Objeto llave asociado a la transición.
    */
   private Object getLlaves(
-      int transition) { // automatiza la creacion de llaves (una para cada transicion) tambien se
-    // usa para obtener llave especifica
+      int
+          transition) { // automatiza la creacion de llaves (una para cada transicion) tambien se
+                        // usa para obtener llave especifica
     if (!llaves.containsKey(transition)) {
       llaves.put(transition, new Object());
     }
@@ -132,7 +130,7 @@ public class Monitor implements MonitorInterface {
     return termino;
   }
 
-  public String getBetaErrors() {
+  public String getBetaErrors(){
     return betaErrors;
   }
 
@@ -150,26 +148,25 @@ public class Monitor implements MonitorInterface {
     while (!termino) {
       try {
         mutex.acquire(); // Toma el mutex
-        if (alfaYBetas.get(transition).isHabilitada()) {
-          alfaYBetas.get(transition).setTiempoActual(System.currentTimeMillis());
-        }
         if (!sensibilizado(transition)) { // Verifica si no esta sensibilizada
           dormirHilo(transition);
+          if(alfaYBetas.get(transition).isHabilitada()){
+            alfaYBetas.get(transition).setTiempoActual(System.currentTimeMillis());
+          }
           continue;
+        }
+        if(alfaYBetas.get(transition).isHabilitada()){
+          alfaYBetas.get(transition).setTiempoActual(System.currentTimeMillis());
         }
         try {
           alfaYBetas.get(transition).comprobarAlfaYBeta();
         } catch (AlfaException alf) {
-          mutex.release();
-          continue;
-        } catch (BetaException bet) {
-          betaErrors +=
-              "Error beta, tiempo exedido en la transicion "
-                  + transition
-                  + " tiempo exedido: "
-                  + (Long.parseLong(bet.getMessage()) - alfaYBetas.get(transition).getBeta())
-                  + " milisegundos.\n";
-        }
+        mutex.release();
+        continue;
+       } catch (BetaException bet) {
+        betaErrors += "Error beta, tiempo exedido en la transicion "+ transition +
+                " tiempo exedido: "+ (Long.parseLong(bet.getMessage())- alfaYBetas.get(transition).getBeta()) + " milisegundos.\n";
+       }
 
         disparar(transition); // Disparo de la transicion
         mutex.release(); // Devuelve el mutex
@@ -226,10 +223,10 @@ public class Monitor implements MonitorInterface {
   private void comprobarTermino() {
     for (int t = 0; t < matrizIncidencia[0].length; t++) {
       if (sensibilizado(t)) {
-        return;
+       return;
       }
     }
-    termino = true;
+  termino=true;
     PantallaCarga.cerrar();
     for (Object o : llaves.values()) {
       synchronized (o) {
@@ -238,7 +235,9 @@ public class Monitor implements MonitorInterface {
     }
   }
 
-  /** Despierta los hilos asociados a las transiciones sensibilizadas después de un disparo. */
+  /**
+   * Despierta los hilos asociados a las transiciones sensibilizadas después de un disparo.
+   */
   private void despertarHilos() {
     List<Integer> sensibilizadas = new ArrayList<>();
     for (int t = 0; t < matrizIncidencia[0].length; t++) {

@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -15,7 +16,7 @@ public class Main {
     // Se pide por pantalla la seleccion de la politica a utilizar
     Scanner scanner = new Scanner(System.in);
     int numero = 0;
-    System.out.print("politicas:\n1) Politica balanceada\n2) Politica diferenciada\n");
+    System.out.print("\u001B[34m"+"politicas:\n1) Politica balanceada\n2) Politica diferenciada\n");
     while (true) {
       System.out.println("Ingrese el numero correspondiente a la politica: ");
       try {
@@ -31,28 +32,37 @@ public class Main {
     }
 
     int[][] matrizIncidencia =
-        new int[][] {
-          {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-          {-1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-          {1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-          {0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0},
-          {-1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-          {0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0},
-          {0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-          {0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0},
-          {0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0},
-          {0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0},
-          {0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0},
-          {0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0},
-          {0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0},
-          {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
-          {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
-        };
-    ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
-    for (int i = 0; matrizIncidencia[0].length > i; i++) {
-      alfaybetas.add(new AlfaYBeta(10, 1200));
+            new int[][]{
+                    {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
+                    {-1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {-1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0},
+                    {0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0},
+                    {0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
+            };
+
+    ArrayList<AlfaYBeta> alfaybetas= new ArrayList<>();
+
+    for(int i = 0; matrizIncidencia[0].length > i; i++){
+      alfaybetas.add(new AlfaYBeta());
     }
-    int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
+    alfaybetas.get(1).setAlfaYBeta(16,20);
+    alfaybetas.get(4).setAlfaYBeta(15,20);
+    alfaybetas.get(5).setAlfaYBeta(15,20);
+    alfaybetas.get(8).setAlfaYBeta(4,20);
+    alfaybetas.get(9).setAlfaYBeta(3,20);
+    alfaybetas.get(10).setAlfaYBeta(5,20);
+
+    int[] marcado = new int[]{186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
     Monitor.getInstance(marcado, matrizIncidencia, politica, alfaybetas);
 
     {
@@ -67,11 +77,11 @@ public class Main {
     // 1 hilo por agente
     for (int i = 0; i < 1; i++)
       hilos.add(
-          factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
+              factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
 
     for (int i = 0; i < 1; i++)
       hilos.add(
-          factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));
+              factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));
 
     // 1 Hilo encargado de la cancelacion
     for (int i = 0; i < 1; i++)
@@ -99,6 +109,7 @@ public class Main {
         throw new RuntimeException(e);
       }
     }
-    System.out.println("Fin de la ejecucion");
+    System.out.println("\u001B[31m"+"Fin de la ejecucion");
+
   }
 }
