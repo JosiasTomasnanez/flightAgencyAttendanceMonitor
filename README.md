@@ -26,24 +26,24 @@ The Python program is executed as a separate process from the Java project itsel
 **Key Features of the Project**
 
 1. Process Simulation:
-   Models operations: client entry, reservations, payments, confirmations, and cancellations.
-   Simulates delays using sleep functions.
+Models operations: client entry, reservations, payments, confirmations, and cancellations.
+Simulates delays using sleep functions.
 
 2. Concurrent Management:
-   Concurrency monitor to regulate access to shared resources.
-   Prevention of conflicts in transition firing.
+Concurrency monitor to regulate access to shared resources.
+Prevention of conflicts in transition firing.
 
 3. Adaptability and Flexible Configuration:
-   Compatibility with Petri nets defined by incidence matrices.
-   Support for custom policies via the Policy interface.
-   Configuration of alpha and beta times for each transition.
+Compatibility with Petri nets defined by incidence matrices.
+Support for custom policies via the Policy interface.
+Configuration of alpha and beta times for each transition.
 
 4. Comprehensive Logging:
-   Log that records intermediate states and final simulation results.
+Log that records intermediate states and final simulation results.
 
 5. Automated Validation:
-   Python automaton to validate the transition sequence.
-   Integration of the automaton's output into the final log.
+Python automaton to validate the transition sequence.
+Integration of the automaton's output into the final log.
 
 
 **Project Objective**
