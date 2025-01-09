@@ -126,11 +126,6 @@ public class Log implements Runnable {
               + "Clientes saliente: "
               + marcado[14]
               + "\n");
-      try {
-        Thread.sleep(100);
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
     }
   }
 
