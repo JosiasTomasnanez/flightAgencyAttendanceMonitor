@@ -59,12 +59,12 @@ public class Main {
     for (int i = 0; matrizIncidencia[0].length > i; i++) {
       alfaybetas.add(new AlfaYBeta());
     }
-    alfaybetas.get(1).setAlfaYBeta(16, 20);
-    alfaybetas.get(4).setAlfaYBeta(15, 20);
-    alfaybetas.get(5).setAlfaYBeta(15, 20);
-    alfaybetas.get(8).setAlfaYBeta(4, 20);
-    alfaybetas.get(9).setAlfaYBeta(3, 20);
-    alfaybetas.get(10).setAlfaYBeta(5, 20);
+    alfaybetas.get(1).setAlfaYBeta(8, 12);
+    alfaybetas.get(4).setAlfaYBeta(24, 29);
+    alfaybetas.get(5).setAlfaYBeta(24, 29);
+    alfaybetas.get(8).setAlfaYBeta(16, 21);
+    alfaybetas.get(9).setAlfaYBeta(20, 25);
+    alfaybetas.get(10).setAlfaYBeta(24, 29);
 
     int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
     Monitor.getInstance(marcado, matrizIncidencia, politica, alfaybetas);

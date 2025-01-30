@@ -32,7 +32,7 @@ public class Cancelacion implements Runnable {
     while (!monitor.isFinish()) {
       monitor.fireTransition(7); // Disparo de T7
       try {
-        Thread.sleep(40); // Duracion del proceso
+        Thread.sleep(70); // Duracion del proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
