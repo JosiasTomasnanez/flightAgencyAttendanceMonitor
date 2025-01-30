@@ -126,7 +126,14 @@ public class Log implements Runnable {
               + "Clientes saliente: "
               + marcado[14]
               + "\n");
+      try {
+        Thread.sleep(50); // Duracion del proceso
+      } catch (InterruptedException e) {
+        throw new RuntimeException(e);
+      }
     }
+
+
   }
 
   private void comprobarSecuencia() {
