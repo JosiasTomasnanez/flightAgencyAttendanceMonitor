@@ -35,7 +35,7 @@ public class AtencionAgente implements Runnable {
       if (agente.equals(NumeroDeAgente.AGENTE1)) { // Agente Numero 1 o Superor
         monitor.fireTransition(2); // Disparo de T2
         try {
-          Thread.sleep(0); // Duracion del proceso
+          Thread.sleep(200); // Duracion del proceso
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
@@ -43,7 +43,7 @@ public class AtencionAgente implements Runnable {
       } else { // Agente Numero 2 o Inferior
         monitor.fireTransition(3); // Disparo de T3
         try {
-          Thread.sleep(0); // Duracion del proceso
+          Thread.sleep(200); // Duracion del proceso
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }

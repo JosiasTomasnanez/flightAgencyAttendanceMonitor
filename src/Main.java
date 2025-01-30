@@ -14,8 +14,13 @@ public class Main {
     PoliticaAgenciaVuelo politica; // Variable que guarda la instancia de la politica a usar
     // Se pide por pantalla la seleccion de la politica a utilizar
     Scanner scanner = new Scanner(System.in);
-    int numero = 0;
-    System.out.print("politicas:\n1) Politica balanceada\n2) Politica diferenciada\n");
+    int numero;
+    System.out.print(
+        """
+        \u001B[34mpoliticas:
+        1) Politica balanceada
+        2) Politica diferenciada
+        """);
     while (true) {
       System.out.println("Ingrese el numero correspondiente a la politica: ");
       try {
@@ -48,24 +53,36 @@ public class Main {
           {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
           {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
         };
+
+    ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
+
+    for (int i = 0; matrizIncidencia[0].length > i; i++) {
+      alfaybetas.add(new AlfaYBeta());
+    }
+    alfaybetas.get(1).setAlfaYBeta(8, 12);
+    alfaybetas.get(4).setAlfaYBeta(24, 29);
+    alfaybetas.get(5).setAlfaYBeta(24, 29);
+    alfaybetas.get(8).setAlfaYBeta(16, 21);
+    alfaybetas.get(9).setAlfaYBeta(20, 25);
+    alfaybetas.get(10).setAlfaYBeta(24, 29);
+
     int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
-    Monitor.getInstance(marcado, matrizIncidencia, politica);
+    Monitor.getInstance(marcado, matrizIncidencia, politica, alfaybetas);
 
     {
       PantallaCarga pantalla = new PantallaCarga();
       pantalla.setVisible(true);
       pantalla.setResizable(false);
-    } // parte grafica de pantalla de carga
+    } // parte gráfica de pantalla de carga
 
     OurThreadFactory factory = new OurThreadFactory();
     ArrayList<Thread> hilos = new ArrayList<>();
-
-    // Creacion de Hilos
 
     // 1 hilo por agente
     for (int i = 0; i < 1; i++)
       hilos.add(
           factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
+
     for (int i = 0; i < 1; i++)
       hilos.add(
           factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));
@@ -78,7 +95,7 @@ public class Main {
     for (int i = 0; i < 1; i++)
       hilos.add(factory.newThread(new ConfirmacionYPago(Monitor.getInstance())));
 
-    // 5 hilos encargado de la generacion y entrada de clientes
+    // 5 hilos encargados de la generacion y entrada de clientes
     for (int i = 0; i < 5; i++)
       hilos.add(factory.newThread(new EntradaDeClientes(Monitor.getInstance())));
 
@@ -96,6 +113,6 @@ public class Main {
         throw new RuntimeException(e);
       }
     }
-    System.out.println("Fin de la ejecucion");
+    System.out.println("\u001B[31m" + "Fin de la ejecucion");
   }
 }

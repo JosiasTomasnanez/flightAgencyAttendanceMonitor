@@ -1,6 +1,4 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -69,7 +67,7 @@ public class Log implements Runnable {
   @Override
   public void run() {
     while (true) {
-      if (Monitor.getInstance().termino) {
+      if (Monitor.getInstance().isFinish()) {
         pw.println(
             "tiempo en milis: "
                 + (System.currentTimeMillis() - tiempo)
@@ -90,11 +88,10 @@ public class Log implements Runnable {
                 + Monitor.getInstance().getMarcado()[14]
                 + "\n");
         imprimirTransiciones();
-        try {
-          Thread.sleep(100);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
+        comprobarSecuencia();
+        pw.println(
+            "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
+                + Monitor.getInstance().getBetaErrors());
         return;
       }
       int[] marcado = Monitor.getInstance().getMarcado();
@@ -130,10 +127,61 @@ public class Log implements Runnable {
               + marcado[14]
               + "\n");
       try {
-        Thread.sleep(100);
+        Thread.sleep(50); // Duracion del proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
     }
+
+
+  }
+
+  private void comprobarSecuencia() {
+    pw.println();
+    try {
+      // Detectar dinámicamente el intérprete de Python
+      String pythonPath = detectPythonInterpreter();
+      if (pythonPath == null) {
+        return;
+      }
+
+      String scriptPath = "PetriFlightAnalyzer.py";
+      String parametro = Monitor.getInstance().getSecuencia();
+
+      // Crear el proceso
+      ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath, parametro);
+      processBuilder.redirectErrorStream(true);
+      Process process = processBuilder.start();
+
+      BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+      String line;
+      while ((line = reader.readLine()) != null) {
+        pw.println(line);
+      }
+
+      process.waitFor();
+    } catch (IOException | InterruptedException e) {
+      throw new RuntimeException("Error al ejecutar el script de Python.", e);
+    }
+  }
+
+  private String detectPythonInterpreter() {
+    String[] interpreters = {"python3", "python", "python2"};
+    for (String interpreter : interpreters) {
+      try {
+        ProcessBuilder processBuilder = new ProcessBuilder(interpreter, "--version");
+        processBuilder.redirectErrorStream(true);
+        Process process = processBuilder.start();
+
+        // Leer la salida para comprobar si es válido
+        BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        if (reader.readLine() != null) {
+          return interpreter; // Devolver el primer intérprete válido
+        }
+      } catch (IOException ignored) {
+        // Ignorar y probar el siguiente intérprete
+      }
+    }
+    return null; // No se encontró un intérprete válido
   }
 }

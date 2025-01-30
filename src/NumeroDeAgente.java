@@ -16,7 +16,7 @@ public enum NumeroDeAgente {
    *
    * @param numeroDeAgente el número asociado al agente, como una cadena de texto.
    */
-  private NumeroDeAgente(int numeroDeAgente) {
+  NumeroDeAgente(int numeroDeAgente) {
     this.numeroDeAgente = numeroDeAgente;
   }
 

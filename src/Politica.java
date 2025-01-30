@@ -6,7 +6,7 @@
 public interface Politica {
 
   /**
-   * Establece la política a utilizar según el número de política especificado.
+   * Establece la política a utilizar según el número de políticas especificado.
    *
    * @param numeroDePolitica el código de la política a aplicar.
    * @throws PoliticaInexistenteException si el número de política proporcionado no corresponde a
