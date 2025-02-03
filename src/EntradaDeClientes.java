@@ -33,7 +33,7 @@ public class EntradaDeClientes implements Runnable {
     while (!monitor.isFinish()) {
       monitor.fireTransition(0); // Disparo de T0
       try {
-        Thread.sleep(200); // Duracion del Proceso
+        Thread.sleep(40); // Duracion del Proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
