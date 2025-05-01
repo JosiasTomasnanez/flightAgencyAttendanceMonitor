@@ -6,3 +6,4 @@
 **Subir cambios:** git push
 **crear una rama:** git checkout -b "Nombre Rama"
 **Moverse entre ramas:** git checkout "Rama"
+**Subir cambios desde una rama:** git push --set-upstream origin reorganizacion
