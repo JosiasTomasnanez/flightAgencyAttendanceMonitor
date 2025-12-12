@@ -149,33 +149,31 @@ public class Monitor implements MonitorInterface {
     public boolean fireTransition(int t) {
 
         if (termino) return false;
-
         try {
             mutex.acquire();
 
-  while (true) {
+            while (true) {
 
             switch (alfaYBetas.get(t).verificar()) {
 
                 case BLOQUEAR -> {
-                   long inicio = alfaYBetas.get(t).getInicio();
-                long transcurrido = System.currentTimeMillis() - inicio;
-                long faltante = alfaYBetas.get(t).getAlfa() - transcurrido;
+                    long inicio = alfaYBetas.get(t).getInicio();
+                    long transcurrido = System.currentTimeMillis() - inicio;
+                    long faltante = alfaYBetas.get(t).getAlfa() - transcurrido;
 
                 if (faltante < 1) faltante = 1;
 
-                mutex.release();
-                synchronized (getLlave(t)) {
-                    getLlave(t).wait(faltante);
-                }
+                    mutex.release();
+                    synchronized (getLlave(t)) {
+                        getLlave(t).wait(faltante);
+                    }
                 mutex.acquire();
                 continue; // volver a verificar alfa/beta
                     // luego de esperar, vuelve a verificar alfa/beta/sensibilizado
                 }
 
                 case BETA -> {
-                    betaErrors += "\nT" + t + " excedió β por "
-                                  + alfaYBetas.get(t).getTiempoExcedido() + " ms";
+                    betaErrors += "\nT" + t + " excedió β por " + alfaYBetas.get(t).getTiempoExcedido() + " ms";
                     // pero NO bloquea → continúa
                     break;
                 }
@@ -196,9 +194,10 @@ public class Monitor implements MonitorInterface {
                 mutex.acquire();  // re-adquirir tras despertar
             }
 
+            
+
             // Disparo real
             disparar(t);
-            alfaYBetas.get(t).iniciar();  // reiniciar alfa/beta para la próxima vez
             // Actualizar quién puede seguir
             despertarHilos();
 
@@ -249,8 +248,18 @@ public class Monitor implements MonitorInterface {
         }
 
         // Regular
+        alfaYBetas.get(t).setInicio(0);
         marcado = nuevoMarcado(t);
         comprobarTermino();
+        actualizarAlfaYBeta();
+
+    }
+
+    private void actualizarAlfaYBeta() {
+        for (int t = 0; matrizIncidencia[0].length > t; t++)  {
+            if(sensibilizado(t) && alfaYBetas.get(t).getInicio() <= 0)
+                alfaYBetas.get(t).iniciar();
+        }
     }
 
     // --------------------------------------------------------

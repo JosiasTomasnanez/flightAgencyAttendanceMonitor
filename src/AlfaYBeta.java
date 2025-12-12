@@ -15,18 +15,25 @@ public class AlfaYBeta {
         this.alfa = alfa;
         this.beta = beta;
         this.sinRestriccion = false;
+        this.inicio = 0;
     }
 
     public AlfaYBeta() {
         this.sinRestriccion = true;
+        this.inicio = 1;
     }
 
      public void setAlfaYBeta(long alfa, long beta) {
         this.alfa = alfa;
         this.beta = beta;
         this.sinRestriccion = false;
+        this.inicio = 0;
     }
 
+    public void setInicio(long inicio) {
+        this.inicio = inicio;
+    }
+    
     public long getInicio() {
         return inicio;
     }
