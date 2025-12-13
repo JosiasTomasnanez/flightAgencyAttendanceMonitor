@@ -1,101 +1,74 @@
-/**
- * La clase {@code AlfaYBeta} gestiona un sistema de control de tiempos basado en dos límites: un
- * tiempo mínimo ({@code alfa}) y un tiempo máximo ({@code beta}).
- *
- * <p>La clase permite comprobar si un tiempo transcurrido cumple con los valores de {@code alfa} y
- * {@code beta}, lanzando excepciones específicas en caso de incumplimiento.
- */
+
 public class AlfaYBeta {
-  private long tiempoActual =
-      0; // Tiempo actual en milisegundos desde un momento inicial registrado.
-  private long alfa, beta; // Limite superior e inferior permitido en milisegundos
-  private boolean habilitada = true; // Estado de habilitación para comprobaciones de tiempo.
-  private boolean sinAlfaYBeta;
 
-  /**
-   * Constructor de la clase {@code AlfaYBeta}.
-   *
-   * @param alfa el tiempo mínimo permitido (en milisegundos).
-   * @param beta el tiempo máximo permitido (en milisegundos).
-   */
-  public AlfaYBeta(long alfa, long beta) {
-    this.alfa = alfa;
-    this.beta = beta;
-    sinAlfaYBeta = false;
-  }
-
-  public AlfaYBeta() {
-    alfa = 0;
-    beta = 0;
-    sinAlfaYBeta = true;
-  }
-
-  public void setAlfaYBeta(long alfa, long beta) {
-    this.alfa = alfa;
-    this.beta = beta;
-    sinAlfaYBeta = false;
-  }
-
-  /**
-   * Verifica si el estado está habilitado.
-   *
-   * @return {@code true} si está habilitada, {@code false} en caso contrario.
-   */
-  public boolean isHabilitada() {
-    return habilitada;
-  }
-
-  /**
-   * Establece el tiempo actual y deshabilita el estado.
-   *
-   * @param tiempoActual el tiempo actual (en milisegundos).
-   */
-  public void setTiempoActual(long tiempoActual) {
-    this.tiempoActual = tiempoActual;
-    habilitada = false;
-  }
-
-  /**
-   * Obtiene el valor de {@code alfa}.
-   *
-   * @return el tiempo mínimo permitido (en milisegundos).
-   */
-  public long getAlfa() {
-    return alfa;
-  }
-
-  /**
-   * Obtiene el valor de {@code beta}.
-   *
-   * @return el tiempo máximo permitido (en milisegundos).
-   */
-  public long getBeta() {
-    return beta;
-  }
-
-  /**
-   * Obtiene el tiempo actual.
-   *
-   * @return el tiempo actual registrado (en milisegundos).
-   */
-  public long getTiempoActual() {
-    return tiempoActual;
-  }
-
-  /**
-   * Comprueba si el tiempo transcurrido desde el momento registrado cumple con los límites de
-   * {@code alfa} y {@code beta}.
-   *
-   * @throws AlfaException si el tiempo transcurrido es menor que {@code alfa}.
-   * @throws BetaException si el tiempo transcurrido es mayor que {@code beta}.
-   */
-  public void comprobarAlfaYBeta() throws AlfaException, BetaException {
-    if (sinAlfaYBeta) {
-      return;
+    public static enum Estado {
+        OK,         // puede dispararse
+        BLOQUEAR,   // no alcanzó alfa → bloquear
+        BETA        // excedió beta → loguear y permitir
     }
-    long tiempo = System.currentTimeMillis() - tiempoActual;
-    if (tiempo < alfa) throw new AlfaException();
-    habilitada = true;
-    if (tiempo > beta) throw new BetaException(tiempo);
-  }
+    private boolean iniciado = false;
+    private long alfa, beta;
+    private long inicio;
+    private boolean sinRestriccion = false;
+
+    public AlfaYBeta(long alfa, long beta) {
+        this.alfa = alfa;
+        this.beta = beta;
+        this.sinRestriccion = false;
+        this.inicio = 0;
+    }
+
+    public AlfaYBeta() {
+        this.sinRestriccion = true;
+        this.inicio = 1;
+    }
+
+     public void setAlfaYBeta(long alfa, long beta) {
+        this.alfa = alfa;
+        this.beta = beta;
+        this.sinRestriccion = false;
+        this.inicio = 0;
+    }
+
+    public void setInicio(long inicio) {
+        this.inicio = inicio;
+    }
+    
+    public long getInicio() {
+        return inicio;
+    }
+
+    public long getBeta() {
+        return beta;
+    }
+    public long getAlfa() {
+        return alfa;
+    } 
+    public void iniciar() {
+        this.inicio = System.currentTimeMillis();
+        this.iniciado = true;
+    }
+
+    public Estado verificar() {
+        if (sinRestriccion) return Estado.OK;
+          
+        // EVITAR errores en el primer uso
+        if (!iniciado) {
+          return Estado.OK;  // permite el primer disparo
+          }
+        
+          long elapsed = System.currentTimeMillis() - inicio;
+
+        if (elapsed < alfa)
+            return Estado.BLOQUEAR;
+
+        if (elapsed > beta)
+            return Estado.BETA;
+
+        return Estado.OK;
+    }
+
+    public long getTiempoExcedido() {
+        return System.currentTimeMillis() - inicio - beta;
+    }
 }
