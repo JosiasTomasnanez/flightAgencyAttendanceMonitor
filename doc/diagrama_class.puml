@@ -1,0 +1,8 @@
+@startuml diagr_clase
+
+class "main"{
+    + string nombre
+    + void main()
+}
+
+@enduml
