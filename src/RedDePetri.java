@@ -71,6 +71,7 @@ private boolean termino = false; // comprobar si todos los clientes terminaron
 
     public boolean dispararTransicion(int t) {
          // Simulación T11 especial
+        secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1  
         if (t == 11) {
             simT11++;
             PantallaCarga.incrementarPorcentaje(simT11, maxClient);
@@ -87,7 +88,7 @@ private boolean termino = false; // comprobar si todos los clientes terminaron
             throw new IllegalStateException("La transición " + t + " no está sensibilizada.");
         }
         marcado = nuevoMarcado(t);
-        secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1  
+        
         return true;
     } 
     public String getSecuencia() {
