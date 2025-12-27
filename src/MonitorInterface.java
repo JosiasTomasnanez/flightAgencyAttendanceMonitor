@@ -15,21 +15,4 @@ public interface MonitorInterface {
    *     dispararla.
    */
   boolean fireTransition(int transicion);
-
-  /**
-   * Obtiene la secuencia actual de transiciones disparadas en la red de Petri. Esta secuencia se
-   * devuelve como una cadena de texto que refleja el orden en que las transiciones fueron
-   * activadas.
-   *
-   * @return una cadena que representa la secuencia de transiciones disparadas.
-   */
-  String getSecuencia();
-
-  /**
-   * Verifica si el proceso en la red de Petri ha terminado. Este metodo debe determinar si el
-   * sistema ha llegado a un estado final, donde no es posible realizar más transiciones.
-   *
-   * @return {@code true} si el proceso ha terminado; {@code false} si aún puede continuar.
-   */
-  boolean isFinish();
 }

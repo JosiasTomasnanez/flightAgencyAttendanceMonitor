@@ -67,7 +67,8 @@ scanner.close();
     alfaybetas.get(10).setAlfaYBeta(24, 90);
 
     int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
-    Monitor.getInstance(marcado, matrizIncidencia, politica, alfaybetas);
+    RedDePetri redDePetri = new RedDePetri(matrizIncidencia, marcado);
+    Monitor.getInstance(redDePetri, politica, alfaybetas);
 
     {
       PantallaCarga pantalla = new PantallaCarga();
@@ -100,7 +101,7 @@ scanner.close();
       hilos.add(factory.newThread(new EntradaDeClientes(Monitor.getInstance())));
 
     // Hilo encargado del Log
-    hilos.add(factory.newThread(new Log()));
+    hilos.add(factory.newThread(new Log(redDePetri)));
 
     // Inicializacion de los hilos
     for (Thread h : hilos) {

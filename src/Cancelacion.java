@@ -29,15 +29,15 @@ public class Cancelacion implements Runnable {
    */
   @Override
   public void run() {
-    while (!monitor.isFinish()) {
-      monitor.fireTransition(7); // Disparo de T7
+    while (true) {
+      if(!monitor.fireTransition(7)) return; // Disparo de T7
       try {
         Thread.sleep(70); // Duracion del proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      monitor.fireTransition(8); // Disparo de T8
-      monitor.fireTransition(11); // Disparo de T11
+      if(!monitor.fireTransition(8)) return; // Disparo de T8
+      if(!monitor.fireTransition(11)) return; // Disparo de T11
     }
   }
 
