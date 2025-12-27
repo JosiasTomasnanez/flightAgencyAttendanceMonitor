@@ -23,7 +23,7 @@ public class AlfaYBeta {
         this.inicio = 1;
     }
 
-     public void setAlfaYBeta(long alfa, long beta) {
+    public void setAlfaYBeta(long alfa, long beta) {
         this.alfa = alfa;
         this.beta = beta;
         this.sinRestriccion = false;

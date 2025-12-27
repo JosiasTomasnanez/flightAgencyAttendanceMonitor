@@ -1,8 +1,50 @@
-@startuml diagr_clase
+@startuml clases
 
-class "main"{
-    + string nombre
+class main{
     + void main()
 }
+
+class AlfaYBeta{
+    + enum Estado
+    - boolean iniciado
+    - long alfa
+    - long beta
+    - long inicio
+    - boolean sinRestriccion
+    + AlfaYBeta(long alfa, long beta)
+    + AlfaYBeta()
+    + void setAlfaYBeta(long alfa, long beta)
+    + void setInicio(long inicio)
+    + long getInicio()
+    + long getBeta()
+    + long getAlfa()
+    + void iniciar()
+    + Estado verificar()
+    + long getTiempoExcedido()
+}
+
+class AtencionAgente{}
+
+class Cancelacion{}
+
+class ConfirmacionYPago{}
+
+class EntradaDeClientes{}
+
+class Log{}
+
+class Monitor{}
+
+interface MonitorInterface{}
+
+class NumeroDeAgente{}
+
+class OutTHreadFactory{}
+
+class Politica{}
+
+class PoliticaAgenciaVuelo{}
+
+class RedPetri{}
 
 @enduml
