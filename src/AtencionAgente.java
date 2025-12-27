@@ -31,15 +31,15 @@ public class AtencionAgente implements Runnable {
    */
   @Override
   public void run() {
-    while (!monitor.isFinish()) {
+    while (true) {
       if (agente.equals(NumeroDeAgente.AGENTE1)) { // Agente Numero 1 o Superor
-        monitor.fireTransition(2); // Disparo de T2
+        if(!monitor.fireTransition(2)) return; // Disparo de T2
         try {
           Thread.sleep(200); // Duracion del proceso
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
-        monitor.fireTransition(5); // Disparo de T5
+        if(!monitor.fireTransition(5)) return; // Disparo de T5
       } else { // Agente Numero 2 o Inferior
         monitor.fireTransition(3); // Disparo de T3
         try {
@@ -47,7 +47,7 @@ public class AtencionAgente implements Runnable {
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
-        monitor.fireTransition(4); // Disparo de T4
+        if(!monitor.fireTransition(4)) return; // Disparo de T4
       }
     }
   }

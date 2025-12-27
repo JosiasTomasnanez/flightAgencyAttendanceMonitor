@@ -29,8 +29,8 @@ public class ConfirmacionYPago implements Runnable {
    */
   @Override
   public void run() {
-    while (!monitor.isFinish()) {
-      monitor.fireTransition(6); // Disparo de T6
+    while (true) {
+      if(!monitor.fireTransition(6)) return; // Disparo de T6
       try {
         Thread.sleep(60); // Duracion del Proceso Confirmacion
       } catch (InterruptedException e) {
@@ -42,8 +42,8 @@ public class ConfirmacionYPago implements Runnable {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      monitor.fireTransition(10); // Disparo de T10
-      monitor.fireTransition(11); // Disparo de T11
+      if(!monitor.fireTransition(10)) return; // Disparo de T10
+      if(!monitor.fireTransition(11)) return; // Disparo de T11
     }
   }
 

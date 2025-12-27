@@ -14,8 +14,8 @@ import java.util.regex.Pattern;
 public class Log implements Runnable {
   private final long tiempo; // El tiempo de inicio del proceso de registro, en milisegundos.
   private static final FileWriter file; // El escritor de archivo para guardar los registros.
-  private static final PrintWriter
-      pw; // El escritor de texto que permite la escritura en el archivo de log.
+  private RedDePetri redDePetri;
+  private static final PrintWriter pw; // El escritor de texto que permite la escritura en el archivo de log.
 
   static {
     try {
@@ -27,8 +27,9 @@ public class Log implements Runnable {
   }
 
   /** Constructor de la clase {@code Log}, inicializa el tiempo de inicio del proceso. */
-  public Log() {
+  public Log(RedDePetri redDePetri) {
     tiempo = System.currentTimeMillis();
+    this.redDePetri = redDePetri;
   }
 
   /**
@@ -57,7 +58,7 @@ public class Log implements Runnable {
 
   /** Imprime la secuencia de transiciones al archivo de log. */
   private void imprimirTransiciones() {
-    pw.println("secuencia de transiciones:\n" + Monitor.getInstance().getSecuencia());
+    pw.println("secuencia de transiciones:\n" + redDePetri.getSecuencia());
   }
 
   /**
@@ -67,25 +68,25 @@ public class Log implements Runnable {
   @Override
   public void run() {
     while (true) {
-      if (Monitor.getInstance().isFinish()) {
+      if (redDePetri.isTermino()) {
         pw.println(
             "tiempo en milis: "
                 + (System.currentTimeMillis() - tiempo)
                 + "\n"
                 + "clientes atendidos por el agente 1: "
-                + contarTransiciones(Monitor.getInstance().getSecuencia(), "T2")
+                + contarTransiciones(redDePetri.getSecuencia(), "T2")
                 + "\n"
                 + "clientes atendidos por el agente 2: "
-                + contarTransiciones(Monitor.getInstance().getSecuencia(), "T3")
+                + contarTransiciones(redDePetri.getSecuencia(), "T3")
                 + "\n"
                 + "Cantidad de clientes que confirmaron: "
-                + contarTransiciones(Monitor.getInstance().getSecuencia(), "T6")
+                + contarTransiciones(redDePetri.getSecuencia(), "T6")
                 + "\n"
                 + "Cantidad de clientes que Cancelaron: "
-                + contarTransiciones(Monitor.getInstance().getSecuencia(), "T7")
+                + contarTransiciones(redDePetri.getSecuencia(), "T7")
                 + "\n"
                 + "clientes que salieron en total: "
-                + Monitor.getInstance().getMarcado()[14]
+                + redDePetri.getMarcado()[14]
                 + "\n");
         imprimirTransiciones();
         comprobarSecuencia();
@@ -93,8 +94,8 @@ public class Log implements Runnable {
             "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
                 + Monitor.getInstance().getBetaErrors());
         return;
-      }
-      int[] marcado = Monitor.getInstance().getMarcado();
+      } 
+      int[] marcado = redDePetri.getMarcado();
       pw.println(
           "Clientes por entrar: "
               + marcado[0]
@@ -146,7 +147,7 @@ public class Log implements Runnable {
       }
 
       String scriptPath = "PetriFlightAnalyzer.py";
-      String parametro = Monitor.getInstance().getSecuencia();
+      String parametro = redDePetri.getSecuencia();
 
       // Crear el proceso
       ProcessBuilder processBuilder = new ProcessBuilder(pythonPath, scriptPath, parametro);
