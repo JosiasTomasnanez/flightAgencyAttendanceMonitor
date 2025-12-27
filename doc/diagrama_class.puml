@@ -13,12 +13,12 @@ class AlfaYBeta{
     - boolean sinRestriccion
     + AlfaYBeta(long alfa, long beta)
     + AlfaYBeta()
-    + void setAlfaYBeta(long alfa, long beta)
-    + void setInicio(long inicio)
+    + setAlfaYBeta(long alfa, long beta)
+    + setInicio(long inicio)
     + long getInicio()
     + long getBeta()
     + long getAlfa()
-    + void iniciar()
+    + iniciar()
     + Estado verificar()
     + long getTiempoExcedido()
 }
