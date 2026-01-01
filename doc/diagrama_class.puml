@@ -52,11 +52,46 @@ class EntradaDeClientes{
     + String toString()
 }
 
-class Log{}
+class Log{
+    - long tiempo
+    - FileWriter file
+    - RedDePetri redDePetri
+    - PrintWriter pw
+    + Log(RedDePetri redDePetri)
+    + int contarTransiciones(String cadena, String transicion)
+    - void imprimirTransiciones()
+    + void run()
+    - void comprobarSecuencia()
+    - String detectPythonInterpreter()
+}
 
-class Monitor{}
+class Monitor{
+    - Monitor m
+    - Semaphore mutex
+    - HashMap<Integer,Object> llaves
+    - RedDePetri redDePetri
+    + Politica politica
+    - ArrayList<AlfaYBeta> alfaYBetas
+    - String betaErrors
+    - Integer politicaAdmite
+    - Monitor(RedDePetri redDePetri, Politica politica, ArrayList<AlfaYBeta> alfaYBetas)
+    + Monitor getInstance()
+    + Monitor getInstance(RedDePetri redDePetri, Politica politica, ArrayList<AlfaYBeta> alfaYBetas)
+    - Object getLlave(int transition)
+    + String getBetaErrors()
+    + boolean fireTransition(int t)
+    - boolean politicaPermite(int t)
+    - void dormirHilo(int t) throws InterruptedException
+    - void disparar(int t)
+    - void actualizarAlfaYBeta()
+    - void notificarATodos()
+    - void despertarHilos()
+    - void notificar(int t)
+}
 
-interface MonitorInterface{}
+interface MonitorInterface{
+    {abstract} boolean fireTransition(int transicion)
+}
 
 class NumeroDeAgente{}
 
