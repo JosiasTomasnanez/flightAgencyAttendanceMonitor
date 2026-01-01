@@ -38,9 +38,19 @@ class Cancelacion{
     + String toString()
 }
 
-class ConfirmacionYPago{}
+class ConfirmacionYPago{
+    - MonitorInterface monitor
+    + ConfirmacionYPago(MonitorInterface monitor)
+    + void run()
+    + String toString()
+}
 
-class EntradaDeClientes{}
+class EntradaDeClientes{
+    - MonitorInterface monitor
+    + EntradaDeClientes(MonitorInterface monitor)
+    + void run()
+    + String toString()
+}
 
 class Log{}
 
