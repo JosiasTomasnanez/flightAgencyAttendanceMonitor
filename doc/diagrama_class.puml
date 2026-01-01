@@ -24,15 +24,16 @@ class AlfaYBeta{
 }
 
 class AtencionAgente{
-    - NumeroDeAgente AgentStereotypeFontColor
-    - MonitorInterface Monitor
-    + AtencionAgente(NumeroDeAgente, MonitorInterface)
+    - NumeroDeAgente agente
+    - MonitorInterface monitor
+    + AtencionAgente(NumeroDeAgente agente, MonitorInterface monitor)
     + void run()
     + String toString()
 }
 
 class Cancelacion{
     - MonitorInterface monitor
+    + Cancelacion(MonitorInterface monitor)
 }
 
 class ConfirmacionYPago{}
