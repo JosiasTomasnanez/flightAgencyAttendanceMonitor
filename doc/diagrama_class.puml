@@ -34,6 +34,8 @@ class AtencionAgente{
 class Cancelacion{
     - MonitorInterface monitor
     + Cancelacion(MonitorInterface monitor)
+    + void run()
+    + String toString()
 }
 
 class ConfirmacionYPago{}
