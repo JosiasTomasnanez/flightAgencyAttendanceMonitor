@@ -1,6 +1,6 @@
 @startuml clases
 
-class main{
+class Main{
     + void main()
 }
 
@@ -23,7 +23,7 @@ class AlfaYBeta{
     + long getTiempoExcedido()
 }
 
-class AtencionAgente{
+class AtencionAgente <<Runnable>>{
     - NumeroDeAgente agente
     - MonitorInterface monitor
     + AtencionAgente(NumeroDeAgente agente, MonitorInterface monitor)
@@ -31,28 +31,28 @@ class AtencionAgente{
     + String toString()
 }
 
-class Cancelacion{
+class Cancelacion <<Runnable>>{
     - MonitorInterface monitor
     + Cancelacion(MonitorInterface monitor)
     + void run()
     + String toString()
 }
 
-class ConfirmacionYPago{
+class ConfirmacionYPago <<Runnable>>{
     - MonitorInterface monitor
     + ConfirmacionYPago(MonitorInterface monitor)
     + void run()
     + String toString()
 }
 
-class EntradaDeClientes{
+class EntradaDeClientes <<Runnable>>{
     - MonitorInterface monitor
     + EntradaDeClientes(MonitorInterface monitor)
     + void run()
     + String toString()
 }
 
-class Log{
+class Log <<Runnable>>{
     - long tiempo
     - FileWriter file
     - RedDePetri redDePetri
@@ -101,7 +101,7 @@ Enum NumeroDeAgente{
     + int getnumeroDeAgente()
 }
 
-class OutThreadFactory{
+class OurThreadFactory <<ThreadFactory>>{
     - AtomicInteger counterThreads
     - List<String> stats
     + OurThreadFactory()
@@ -130,7 +130,7 @@ class PoliticaAgenciaVuelo <<Politica>>{
     - int politicaBalanceada(int i, int j)
 }
 
-class RedPetri{
+class RedDePetri{
     - int[][] matrizIncidencia
     - int[] marcado
     - String secuencia
@@ -149,5 +149,31 @@ class RedPetri{
     + String getSecuencia()
     - boolean comprobarTermino()
 }
+
+
+' Associations
+AtencionAgente --> NumeroDeAgente : agente
+AtencionAgente --> MonitorInterface : monitor
+Cancelacion --> MonitorInterface : monitor
+ConfirmacionYPago --> MonitorInterface : monitor
+EntradaDeClientes --> MonitorInterface : monitor
+Log --> RedDePetri : redDePetri
+Monitor --> RedDePetri : redDePetri
+Monitor --> Politica : politica
+Monitor ..|> MonitorInterface
+PoliticaAgenciaVuelo ..|> Politica
+Monitor o-- "1" RedDePetri : instancia
+Monitor ..> AlfaYBeta : alfaYBetas
+
+' Main relations (creación / uso)
+Main --> OurThreadFactory : crea
+Main --> PantallaCarga : pantalla
+Main --> RedDePetri : redDePetri
+Main --> Monitor : obtiene instancia
+Main --> AtencionAgente : crea hilos de agentes
+Main --> Cancelacion : crea hilo
+Main --> ConfirmacionYPago : crea hilo
+Main --> EntradaDeClientes : crea hilos
+Main --> Log : crea hilo
 
 @enduml
