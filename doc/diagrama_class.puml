@@ -65,7 +65,7 @@ class Log{
     - String detectPythonInterpreter()
 }
 
-class Monitor{
+class Monitor <<MonitorInterface>>{
     - Monitor m
     - Semaphore mutex
     - HashMap<Integer,Object> llaves
@@ -93,14 +93,61 @@ interface MonitorInterface{
     {abstract} boolean fireTransition(int transicion)
 }
 
-class NumeroDeAgente{}
+Enum NumeroDeAgente{
+    AGENTE1
+    AGENTE2
+    - int numnumeroDeAgente
+    + NumeroDeAgente(int numeroDeAgente)
+    + int getnumeroDeAgente()
+}
 
-class OutTHreadFactory{}
+class OutThreadFactory{
+    - AtomicInteger counterThreads
+    - List<String> stats
+    + OurThreadFactory()
+    + Thread newThread(Runnable r)
+    + List<String> getStats()
+}
 
-class Politica{}
+interface Politica{
+    {abstract} setPolitica(int numeroDePolitica)
+    {abstract} int llamadaApolitica(int i, int j)
+}
 
-class PoliticaAgenciaVuelo{}
+class PoliticaAgenciaVuelo <<Politica>>{
+    POLITICA_1
+    POLITICA_2
+    - int codigo
+    - String descripcion
+    -  int numeroPolitica
+    + int getCodigo()
+    + String getDescripcion()
+    + boolean isCodigoValido(int codigo)
+    + PoliticaAgenciaVuelo(int numeroPolitica)
+    + void setPolitica(int numeroPolitica)
+    + int llamadaApolitica(int i, int j)
+    - int politicaPriorizada(int i, int j)
+    - int politicaBalanceada(int i, int j)
+}
 
-class RedPetri{}
+class RedPetri{
+    - int[][] matrizIncidencia
+    - int[] marcado
+    - String secuencia
+    - int simT11
+    - int maxClient
+    - boolean termino
+    + RedDePetri(int[][] matrizIncidencia, int[] marcadoInicial)
+    + int[] getMarcado()
+    + boolean isTermino()
+    + int[][] getMatrizIncidencia()
+    + boolean sensibilizado(int t)
+    + int[] nuevoMarcado(int t)
+    + boolean compartenLugaresDeEntrada(int t1, int t2)
+    + List<Integer> getSensibilizadas()
+    + boolean dispararTransicion(int t)
+    + String getSecuencia()
+    - boolean comprobarTermino()
+}
 
 @enduml
