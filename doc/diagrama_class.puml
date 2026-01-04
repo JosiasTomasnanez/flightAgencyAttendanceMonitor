@@ -45,6 +45,7 @@ class ConfirmacionYPago <<Runnable>>{
     + String toString()
 }
 
+
 class EntradaDeClientes <<Runnable>>{
     - MonitorInterface monitor
     + EntradaDeClientes(MonitorInterface monitor)
