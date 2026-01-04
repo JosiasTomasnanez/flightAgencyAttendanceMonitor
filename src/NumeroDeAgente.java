@@ -1,8 +1,12 @@
 /**
- * Enumeración que representa los diferentes números de agentes en el sistema. Esta enumeración
- * define dos agentes: AGENTE1 y AGENTE2, cada uno asociado a un número de agente único. La clase
- * {@code NumeroDeAgente} proporciona una forma de representar los números de agentes dentro del
- * sistema, permitiendo su uso en diferentes procesos o acciones que requieren identificar a los
+ * Enumeración que representa los diferentes números de agentes en el sistema.
+ * Esta enumeración
+ * define dos agentes: AGENTE1 y AGENTE2, cada uno asociado a un número de
+ * agente único. La clase
+ * {@code NumeroDeAgente} proporciona una forma de representar los números de
+ * agentes dentro del
+ * sistema, permitiendo su uso en diferentes procesos o acciones que requieren
+ * identificar a los
  * agentes de manera sencilla y clara.
  */
 public enum NumeroDeAgente {

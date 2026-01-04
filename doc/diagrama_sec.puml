@@ -1,0 +1,93 @@
+@startuml secuencia
+
+' Definicion de participantes
+participant Hilo1
+participant Hilo2
+participant Monitor
+participant Mutex
+participant Red_de_petri
+participant Colas 
+participant Politicas
+participant vectorSensibilizadas
+
+' Secuencia
+'' El hilo intenta disparar una Transicion
+activate Hilo1
+Hilo1 -> Monitor : dispararTransicion(Tn)
+note left: El hilo intenta disparar la transicion Tn
+activate Monitor
+
+'' El monitor toma el mutex
+Monitor -> Mutex : acquire()
+note left: Toma el mutex
+activate Mutex
+Mutex --> Monitor
+deactivate Mutex
+
+Monitor -> Monitor : k=true
+activate Monitor
+deactivate Monitor
+
+loop k==true
+    Monitor -> Red_de_petri : disparar(Tn)
+    note left 
+    Le indica a la red 
+    que transicion se dispara
+    end note
+    activate Red_de_petri
+    Red_de_petri --> Monitor : se_disparo
+    alt se_disparo == true
+        Monitor -> Red_de_petri : sensibilizadas()
+        note right
+        Devuelve un vector
+        con las transiciones sencibilizadas
+        despues del cambio de estado
+        end note
+        Red_de_petri --> Monitor : Vs
+        Monitor -> Colas : quienesEstan()
+        activate Colas
+        note right
+        Devuelve un vector
+        con las colas que tienen
+        procesos bloqueados
+        end note
+        Colas --> Monitor : Vc
+        deactivate Colas
+        Monitor -> Monitor : m = Vs and Vc
+        note left 
+        Nos dice las Transiciones 
+        sencibilizadas con procesos 
+        esperando
+        end note
+        alt m<>0
+            Monitor-> Politicas : cualDisparar(m)
+            activate Politicas
+            Politicas --> Monitor
+            deactivate Politicas
+            Monitor --> Hilo1 : Sale del monitor
+            deactivate Hilo1
+            Monitor -> Colas : release()
+            activate Colas
+            Colas --> Monitor
+            deactivate Colas
+            Monitor --> Hilo2 : se activa el hilo
+            activate Hilo2
+        else m == 0
+            Monitor -> Monitor : k=false
+            activate Monitor
+            deactivate Monitor
+        end
+    else se_disparo == false
+        Monitor -> Mutex : release()
+        activate Mutex
+        Mutex --> Monitor
+        deactivate Mutex
+        Monitor-> Colas : acquire()
+        activate Colas
+        Colas --> Monitor
+        deactivate Colas
+
+    end
+    Hilo2 -> Monitor : continua ejecucion
+end
+@enduml

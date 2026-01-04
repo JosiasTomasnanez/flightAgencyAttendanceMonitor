@@ -2,10 +2,11 @@
 public class AlfaYBeta {
 
     public static enum Estado {
-        OK,         // puede dispararse
-        BLOQUEAR,   // no alcanzó alfa → bloquear
-        BETA        // excedió beta → loguear y permitir
+        OK, // puede dispararse
+        BLOQUEAR, // no alcanzó alfa → bloquear
+        BETA // excedió beta → loguear y permitir
     }
+
     private boolean iniciado = false;
     private long alfa, beta;
     private long inicio;
@@ -33,7 +34,7 @@ public class AlfaYBeta {
     public void setInicio(long inicio) {
         this.inicio = inicio;
     }
-    
+
     public long getInicio() {
         return inicio;
     }
@@ -41,23 +42,26 @@ public class AlfaYBeta {
     public long getBeta() {
         return beta;
     }
+
     public long getAlfa() {
         return alfa;
-    } 
+    }
+
     public void iniciar() {
         this.inicio = System.currentTimeMillis();
         this.iniciado = true;
     }
 
     public Estado verificar() {
-        if (sinRestriccion) return Estado.OK;
-          
+        if (sinRestriccion)
+            return Estado.OK;
+
         // EVITAR errores en el primer uso
         if (!iniciado) {
-          return Estado.OK;  // permite el primer disparo
-          }
-        
-          long elapsed = System.currentTimeMillis() - inicio;
+            return Estado.OK; // permite el primer disparo
+        }
+
+        long elapsed = System.currentTimeMillis() - inicio;
 
         if (elapsed < alfa)
             return Estado.BLOQUEAR;

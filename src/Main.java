@@ -3,9 +3,12 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /**
- * Clase principal que gestiona la ejecución del programa de la agencia de vuelos. Esta clase se
- * encarga de la interacción con el usuario, la selección de la política, la inicialización de la
- * matriz de incidencia, el marcado inicial y la creación y ejecución de los hilos que simulan las
+ * Clase principal que gestiona la ejecución del programa de la agencia de
+ * vuelos. Esta clase se
+ * encarga de la interacción con el usuario, la selección de la política, la
+ * inicialización de la
+ * matriz de incidencia, el marcado inicial y la creación y ejecución de los
+ * hilos que simulan las
  * diferentes tareas de la agencia.
  */
 public class Main {
@@ -17,10 +20,10 @@ public class Main {
     int numero;
     System.out.print(
         """
-        \u001B[34mpoliticas:
-        1) Politica balanceada
-        2) Politica diferenciada
-        """);
+            \u001B[34mpoliticas:
+            1) Politica balanceada
+            2) Politica diferenciada
+            """);
     while (true) {
       System.out.println("Ingrese el numero correspondiente a la politica: ");
       try {
@@ -34,25 +37,24 @@ public class Main {
         System.out.println("El numero ingresado no corresponde a una politica valida");
       }
     }
-scanner.close();
-    int[][] matrizIncidencia =
-        new int[][] {
-          {-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1},
-          {-1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-          {1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-          {0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0},
-          {-1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0},
-          {0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0},
-          {0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0},
-          {0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0},
-          {0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0},
-          {0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0},
-          {0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0},
-          {0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0},
-          {0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0},
-          {0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0},
-          {0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1}
-        };
+    scanner.close();
+    int[][] matrizIncidencia = new int[][] {
+        { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+        { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { -1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0 },
+        { 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0 },
+        { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1 }
+    };
 
     ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
 
@@ -66,7 +68,7 @@ scanner.close();
     alfaybetas.get(9).setAlfaYBeta(20, 81);
     alfaybetas.get(10).setAlfaYBeta(24, 91);
 
-    int[] marcado = new int[] {186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0};
+    int[] marcado = new int[] { 186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0 };
     RedDePetri redDePetri = new RedDePetri(matrizIncidencia, marcado);
     Monitor.getInstance(redDePetri, politica, alfaybetas);
 
