@@ -35,6 +35,7 @@ class Cancelacion{
     - MonitorInterface monitor
 }
 
+
 class ConfirmacionYPago{}
 
 class EntradaDeClientes{}
