@@ -1,0 +1,24 @@
+@startuml secuencia
+
+' Definicion de participantes
+participant Hilo
+participant Monitor
+participant Mutex
+participant Red_de_petri
+participant Colas 
+participant Politicas
+participant vectorSensibilizadas
+
+' Secuencia
+'' El hilo intenta disparar una Transicion
+activate Hilo
+Hilo -> Monitor : dispararTransicion()
+activate Monitor
+
+'' El monitor toma el mutex
+Monitor -> Mutex : acquire()
+activate Mutex
+Mutex --> Monitor
+deactivate Mutex
+
+@enduml
