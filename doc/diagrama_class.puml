@@ -167,7 +167,6 @@ Monitor ..> AlfaYBeta : alfaYBetas
 
 ' Main relations (creación / uso)
 Main --> OurThreadFactory : crea
-Main --> PantallaCarga : pantalla
 Main --> RedDePetri : redDePetri
 Main --> Monitor : obtiene instancia
 Main --> AtencionAgente : crea hilos de agentes
