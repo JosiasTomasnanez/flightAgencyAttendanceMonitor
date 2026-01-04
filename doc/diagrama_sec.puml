@@ -43,7 +43,7 @@ loop k==true
         con las transiciones sencibilizadas
         despues del cambio de estado
         end note
-        Red_de_petri --> Monitor
+        Red_de_petri --> Monitor : Vs
         Monitor -> Colas : quienesEstan()
         activate Colas
         note right
@@ -51,7 +51,7 @@ loop k==true
         con las colas que tienen
         procesos bloqueados
         end note
-        Colas --> Monitor
+        Colas --> Monitor : Vc
         deactivate Colas
         Monitor -> Monitor : m = Vs and Vc
         note left 
