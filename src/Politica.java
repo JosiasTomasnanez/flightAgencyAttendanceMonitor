@@ -23,5 +23,5 @@ public interface Politica {
    *     utilizada para la toma de decisiones.
    * @return el código de la transición seleccionada según los criterios de la política.
    */
-  int llamadaApolitica(int i, int j, String secuencia);
+  int llamadaApolitica(int i, int j);
 }

@@ -23,9 +23,18 @@ class AlfaYBeta{
     + long getTiempoExcedido()
 }
 
-class AtencionAgente{}
+class AtencionAgente{
+    - NumeroDeAgente AgentStereotypeFontColor
+    - MonitorInterface Monitor
+    + AtencionAgente(NumeroDeAgente, MonitorInterface)
+    + void run()
+    + String toString()
+}
 
-class Cancelacion{}
+class Cancelacion{
+    - MonitorInterface monitor
+}
+
 
 class ConfirmacionYPago{}
 
