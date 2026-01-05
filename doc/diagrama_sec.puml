@@ -38,14 +38,11 @@ loop k==true
     Red_de_petri --> Monitor : se_disparo
     alt se_disparo == true
         Monitor -> Red_de_petri : sensibilizadas()
-        note left
+        note right
         Devuelve un vector
         con las transiciones sencibilizadas
         despues del cambio de estado
         end note
-        & Red_de_petri -> SensibilizadoConTiempo : TestVentanaTiempo()
-        activate SensibilizadoConTiempo
-        deactivate SensibilizadoConTiempo
         Red_de_petri --> Monitor : Vs
         Monitor -> Colas : quienesEstan()
         activate Colas
@@ -62,7 +59,7 @@ loop k==true
         sencibilizadas con procesos 
         esperando
         end note
-        alt m<>0
+        alt m<>0 (Hay hilos esperando)
             Monitor-> Red_de_petri : cualDisparar(m)
             & Red_de_petri -> Politicas : cualDisparar(m)
             activate Politicas
@@ -76,7 +73,7 @@ loop k==true
             deactivate Colas
             Monitor --> Hilo2 : se activa el hilo
             activate Hilo2
-        else m == 0
+        else m == 0 (No hay hilos esperando)
             Monitor -> Monitor : k=false
             activate Monitor
             deactivate Monitor
@@ -94,5 +91,66 @@ loop k==true
     end
     Hilo2 -> Monitor : continua ejecucion
 end
+deactivate Hilo2
 
+
+@enduml
+
+@startuml Disparo transicion temporal
+!pragma teoz true
+
+participant Hilo
+participant Monitor
+participant Mutex
+participant Red_De_Petri
+participant vectorSensibilizado
+participant SensibilizadoConTiempo
+
+activate Hilo
+Hilo -> Monitor : dispararTransicion(Tn)
+note left
+Esto se da cuando un hilo
+intenta disparar una transicion
+Y la red detecta que es una 
+transicion temporal
+end note
+activate Monitor
+
+'' El monitor toma el mutex
+Monitor -> Mutex : acquire()
+activate Mutex
+Mutex --> Monitor
+deactivate Mutex
+
+Monitor -> Monitor : k=true
+activate Monitor
+deactivate Monitor
+
+loop k==true
+    Monitor -> Red_De_Petri : disparar(Tn)
+    activate Red_De_Petri
+    activate vectorSensibilizado
+    activate SensibilizadoConTiempo
+    Red_De_Petri -> vectorSensibilizado : estaSenzibilizada()
+    & vectorSensibilizado -> SensibilizadoConTiempo : testVentanaTemporal()
+    note right
+    Cuando se intenta disparar
+    se comprueba si esta sensibilizada
+    y si lo esta, se comprueba si 
+    se cumple la ventana temporal
+    end note
+    SensibilizadoConTiempo --> vectorSensibilizado : ventana
+    alt ventana == true
+        alt
+        vectorSensibilizado-> SensibilizadoConTiempo : setNuevoTimestamp()
+        deactivate SensibilizadoConTiempo
+        else
+        end
+    else ventana == false
+        
+    end
+    
+end
+deactivate Monitor
+deactivate Red_De_Petri
 @enduml
