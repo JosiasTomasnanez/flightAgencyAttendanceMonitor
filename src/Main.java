@@ -1,43 +1,25 @@
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Scanner;
 
 /**
  * Clase principal que gestiona la ejecución del programa de la agencia de
- * vuelos. Esta clase se
- * encarga de la interacción con el usuario, la selección de la política, la
- * inicialización de la
- * matriz de incidencia, el marcado inicial y la creación y ejecución de los
- * hilos que simulan las
+ * vuelos. Esta clase se encarga de la interacción con el usuario, 
+ * la selección de la política, la inicialización de la matriz de incidencia, 
+ * el marcado inicial y la creación y ejecución de los hilos que simulan las
  * diferentes tareas de la agencia.
  */
 public class Main {
   public static void main(String[] args) {
 
-    PoliticaAgenciaVuelo politica; // Variable que guarda la instancia de la politica a usar
-    // Se pide por pantalla la seleccion de la politica a utilizar
-    Scanner scanner = new Scanner(System.in);
-    int numero;
-    System.out.print(
-        """
-            \u001B[34mpoliticas:
-            1) Politica balanceada
-            2) Politica diferenciada
-            """);
-    while (true) {
-      System.out.println("Ingrese el numero correspondiente a la politica: ");
-      try {
-        numero = scanner.nextInt();
+    int numero = 1;
+    PoliticaAgenciaVuelo politica = null;
+
+    try{
         politica = new PoliticaAgenciaVuelo(numero);
-        break;
-      } catch (InputMismatchException ime) {
-        scanner.next();
-        System.out.println(" Solo se puede digitar un numero.");
-      } catch (PoliticaInexistenteException pie) {
+    } catch (PoliticaInexistenteException pie) {
         System.out.println("El numero ingresado no corresponde a una politica valida");
       }
-    }
-    scanner.close();
+
+    // La matriz de incidencia se tiene que inicializar en la clase red de petri
     int[][] matrizIncidencia = new int[][] {
         { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
         { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
