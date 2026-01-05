@@ -18,41 +18,12 @@ public class Main {
     } catch (PoliticaInexistenteException pie) {
         System.out.println("El numero ingresado no corresponde a una politica valida");
       }
+    
+    // Se genera la instancia de la red de petri, la misma genera su matriz y su marcado inicial
+    RedDePetri redDePetri = new RedDePetri();
 
-    // La matriz de incidencia se tiene que inicializar en la clase red de petri
-    int[][] matrizIncidencia = new int[][] {
-        { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-        { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { -1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0 },
-        { 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0 },
-        { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1 }
-    };
-
-    ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
-
-    for (int i = 0; matrizIncidencia[0].length > i; i++) {
-      alfaybetas.add(new AlfaYBeta());
-    }
-    alfaybetas.get(1).setAlfaYBeta(8, 41);
-    alfaybetas.get(4).setAlfaYBeta(24, 201);
-    alfaybetas.get(5).setAlfaYBeta(24, 201);
-    alfaybetas.get(8).setAlfaYBeta(16, 81);
-    alfaybetas.get(9).setAlfaYBeta(20, 81);
-    alfaybetas.get(10).setAlfaYBeta(24, 91);
-
-    int[] marcado = new int[] { 186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0 };
-    RedDePetri redDePetri = new RedDePetri(matrizIncidencia, marcado);
-    Monitor.getInstance(redDePetri, politica, alfaybetas);
+    // La red de petri es la que sabe que transiciones son temporales y que intervalo tiene
+    Monitor.getInstance(redDePetri, politica, redDePetri.getAlfayBeta());
 
     {
       PantallaCarga pantalla = new PantallaCarga();
