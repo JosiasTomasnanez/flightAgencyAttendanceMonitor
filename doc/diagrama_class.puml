@@ -166,7 +166,7 @@ PoliticaAgenciaVuelo ..|> Politica
 Monitor o-- "1" RedDePetri : instancia
 Monitor ..> AlfaYBeta : alfaYBetas
 
-' Main relations (creación / uso)
+' Relaciones del main
 Main --> OurThreadFactory : crea
 Main --> RedDePetri : redDePetri
 Main --> Monitor : obtiene instancia

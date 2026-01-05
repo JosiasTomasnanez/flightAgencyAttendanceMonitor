@@ -1,5 +1,5 @@
 @startuml secuencia
-
+!pragma teoz true
 ' Definicion de participantes
 participant Hilo1
 participant Hilo2
@@ -8,7 +8,7 @@ participant Mutex
 participant Red_de_petri
 participant Colas 
 participant Politicas
-participant vectorSensibilizadas
+participant SensibilizadoConTiempo
 
 ' Secuencia
 '' El hilo intenta disparar una Transicion
@@ -38,11 +38,14 @@ loop k==true
     Red_de_petri --> Monitor : se_disparo
     alt se_disparo == true
         Monitor -> Red_de_petri : sensibilizadas()
-        note right
+        note left
         Devuelve un vector
         con las transiciones sencibilizadas
         despues del cambio de estado
         end note
+        & Red_de_petri -> SensibilizadoConTiempo : TestVentanaTiempo()
+        activate SensibilizadoConTiempo
+        deactivate SensibilizadoConTiempo
         Red_de_petri --> Monitor : Vs
         Monitor -> Colas : quienesEstan()
         activate Colas
@@ -60,9 +63,10 @@ loop k==true
         esperando
         end note
         alt m<>0
-            Monitor-> Politicas : cualDisparar(m)
+            Monitor-> Red_de_petri : cualDisparar(m)
+            & Red_de_petri -> Politicas : cualDisparar(m)
             activate Politicas
-            Politicas --> Monitor
+            Politicas --> Monitor : NumeroTransicion
             deactivate Politicas
             Monitor --> Hilo1 : Sale del monitor
             deactivate Hilo1
@@ -90,4 +94,5 @@ loop k==true
     end
     Hilo2 -> Monitor : continua ejecucion
 end
+
 @enduml
