@@ -14,12 +14,8 @@ participant SensibilizadoConTiempo
 '' El hilo intenta disparar una Transicion
 activate Hilo1
 Hilo1 -> Monitor : dispararTransicion(Tn)
-note left: El hilo intenta disparar la transicion Tn
 activate Monitor
-
-'' El monitor toma el mutex
 Monitor -> Mutex : acquire()
-note left: Toma el mutex
 activate Mutex
 Mutex --> Monitor
 deactivate Mutex
@@ -30,12 +26,8 @@ deactivate Monitor
 
 loop k==true
     Monitor -> Red_de_petri : disparar(Tn)
-    note left 
-    Le indica a la red 
-    que transicion se dispara
-    end note
     activate Red_de_petri
-    Red_de_petri -> Red_de_petri : estaSensibilizado()
+    & Red_de_petri -> Red_de_petri : estaSensibilizado()
     Red_de_petri -> SensibilizadoConTiempo : getVentana(Tn)
     activate SensibilizadoConTiempo
     SensibilizadoConTiempo --> Red_de_petri : ventana
@@ -68,27 +60,12 @@ loop k==true
     
     alt se_disparo == true
         Monitor -> Red_de_petri : sensibilizadas()
-        note right
-        Devuelve un vector
-        con las transiciones sencibilizadas
-        despues del cambio de estado
-        end note
         Red_de_petri --> Monitor : Vs
         Monitor -> Colas : quienesEstan()
         activate Colas
-        note right
-        Devuelve un vector
-        con las colas que tienen
-        procesos bloqueados
-        end note
         Colas --> Monitor : Vc
         deactivate Colas
         Monitor -> Monitor : m = Vs and Vc
-        note left 
-        Nos dice las Transiciones 
-        sencibilizadas con procesos 
-        esperando
-        end note
         Red_de_petri -> SensibilizadoConTiempo : resetEsperando()
         activate SensibilizadoConTiempo
         deactivate SensibilizadoConTiempo
