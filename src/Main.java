@@ -30,7 +30,7 @@ public class Main {
     RedDePetri redDePetri = new RedDePetri();
 
     // La red de petri es la que sabe que transiciones son temporales y que
-    // intervalo tiene
+    // intervalos tiene
     Monitor.getInstance(redDePetri, politica, redDePetri.getAlfayBeta());
 
     {
