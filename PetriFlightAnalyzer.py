@@ -69,6 +69,11 @@ clientesAgente1 = inv3[1] + inv4[1]
 clientesAgente2 = inv1[1] + inv2[1]
 clientescancelar = inv1[1] + inv3[1]
 clientesconfirmar = inv2[1] + inv4[1]
+porcentaje_agente1 = round((clientesAgente1)/(clientesAgente2+clientesAgente1),2)
+porcentaje_agente2 = round((clientesAgente2)/(clientesAgente2+clientesAgente1),2)
+porcentaje_cancelar = round(((clientescancelar)/(clientescancelar+clientesconfirmar)),2)
+porcentaje_confirmar = round((clientesconfirmar)/(clientescancelar+clientesconfirmar),2)
+
 
 if line[0] == '':
     print('El test finalizo OK')
@@ -77,9 +82,13 @@ if line[0] == '':
     print(inv2)
     print(inv3)
     print(inv4)
-    print('Cantidad de clientes atendidos por Agente 1:', clientesAgente1)
-    print('Cantidad de clientes atendidos por Agente 2:', clientesAgente2)
-    print('Cantidad de clientes que confirmaron:', clientesconfirmar)
-    print('Cantidad de clientes que cancelaron:', clientescancelar)
+    print(f'Cantidad de clientes atendidos por Agente 1 : {clientesAgente1}')
+    print(f'Porcentaje atendido por Agente 1 : {porcentaje_agente1*100} %')
+    print(f'Cantidad de clientes atendidos por Agente 2 : {clientesAgente2}')
+    print(f'Porcentaje atendido por Agente 2 : {porcentaje_agente2*100} %')
+    print(f'Cantidad de clientes que confirmaron : {clientesconfirmar}')
+    print(f'Porcentaje de clientes que confirmaron : {porcentaje_confirmar*100} %')
+    print(f'Cantidad de clientes que cancelaron: {clientescancelar}')
+    print(f'Porcentaje de clientes que cancelaron : {porcentaje_cancelar*100} %')
 else:
     print('El test finalizo FAIL, han sobrado transiciones')

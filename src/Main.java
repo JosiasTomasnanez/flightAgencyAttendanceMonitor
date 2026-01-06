@@ -22,7 +22,7 @@ public class Main {
     try {
       politica = new PoliticaAgenciaVuelo(numero);
     } catch (PoliticaInexistenteException pie) {
-      System.out.println("El numero ingresado no corresponde a una politica valida");
+      System.out.println("Politica Invalida");
     }
 
     // Se genera la instancia de la red de petri, la misma genera su matriz y su
@@ -83,6 +83,6 @@ public class Main {
         throw new RuntimeException(e);
       }
     }
-    System.out.println("\u001B[31m" + "Fin de la ejecucion");
+    System.out.println( "Fin de la ejecucion");
   }
 }

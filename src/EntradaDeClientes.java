@@ -9,8 +9,7 @@
  */
 public class EntradaDeClientes implements Runnable {
 
-  private final MonitorInterface monitor; // Instancia del monitor utilizado para disparar las transiciones en la red de
-                                          // Petri.
+  private final MonitorInterface monitor; // Instancia del monitor utilizado para disparar las transiciones en la red
 
   /**
    * Constructor de la clase {@link EntradaDeClientes}.

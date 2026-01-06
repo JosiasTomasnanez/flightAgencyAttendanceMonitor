@@ -4,18 +4,13 @@ import java.util.regex.Pattern;
 
 /**
  * La clase {@code Log} se encarga de registrar información sobre el estado del
- * sistema en un
- * archivo de log. Implementa {@code Runnable} para permitir que se ejecute en
- * un hilo separado y
- * registre periódicamente el estado del sistema, incluyendo estadísticas sobre
- * las transiciones y
- * los clientes.
+ * sistema en un archivo de log. Implementa {@code Runnable} para permitir
+ * que se ejecute en un hilo separado y registre periódicamente el estado
+ * del sistema, incluyendo estadísticas sobre las transiciones y los clientes.
  *
- * <p>
  * La clase usa un archivo de log denominado {@code log.txt}, y los datos se
- * escriben en dicho
- * archivo de forma periódica con un intervalo de 100 ms, o al finalizar el
- * proceso.
+ * escriben en dicho archivo de forma periódica con un intervalo de 100 ms,
+ * o al finalizar el proceso.
  */
 public class Log implements Runnable {
   private final long tiempo; // El tiempo de inicio del proceso de registro, en milisegundos.
@@ -104,9 +99,9 @@ public class Log implements Runnable {
                 + "\n");
         imprimirTransiciones();
         comprobarSecuencia();
-        pw.println(
-            "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
-                + Monitor.getInstance().getBetaErrors());
+        // pw.println(
+        // "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
+        // + Monitor.getInstance().getBetaErrors());
         return;
       }
       int[] marcado = redDePetri.getMarcado();
