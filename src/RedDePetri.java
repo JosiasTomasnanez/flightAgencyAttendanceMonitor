@@ -2,9 +2,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RedDePetri {
-    private int[][] matrizIncidencia; // Matriz de incidencia de la red de Petri
-    private int[] marcado; // Marcado de la red de Petri
+    
+    private int[][] matrizIncidencia = new int[][] {
+            { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
+            { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { -1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0 },
+            { 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0 },
+            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1 }
+    }; // Matriz de incidencia de la red de Petri
+    public final int CANTIDAD_TRANSICIONES = matrizIncidencia[0].length;
+    private int[] marcado = new int[] { 186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0 }; // Marcado de la red de Petri
     private String secuencia = ""; // Secuencia de transiciones disparadas
+    private ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
 
     // simula la transicion 11, llevando registro, pero sin cambiar de estado (Se
     // pueden borrar si se
@@ -13,14 +32,25 @@ public class RedDePetri {
     private int maxClient; // Cantidad de clientes por atender
     private boolean termino = false; // comprobar si todos los clientes terminaron
 
-    public RedDePetri(int[][] matrizIncidencia, int[] marcadoInicial) {
-        this.matrizIncidencia = matrizIncidencia;
-        this.marcado = marcadoInicial;
+    public RedDePetri() {
         maxClient = this.marcado[0];
+        for (int i = 0; CANTIDAD_TRANSICIONES > i; i++) {
+            alfaybetas.add(new AlfaYBeta());
+        }
+        alfaybetas.get(1).setAlfaYBeta(8, 41);
+        alfaybetas.get(4).setAlfaYBeta(24, 201);
+        alfaybetas.get(5).setAlfaYBeta(24, 201);
+        alfaybetas.get(8).setAlfaYBeta(16, 81);
+        alfaybetas.get(9).setAlfaYBeta(20, 81);
+        alfaybetas.get(10).setAlfaYBeta(24, 91);
     }
 
     public int[] getMarcado() {
         return marcado;
+    }
+
+    public ArrayList<AlfaYBeta> getAlfayBeta(){
+        return alfaybetas;
     }
 
     public boolean isTermino() {
