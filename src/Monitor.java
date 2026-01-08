@@ -92,18 +92,19 @@ public class Monitor implements MonitorInterface {
         return betaErrors;
     }
 
-    // --------------------------------------------------------
-    // 🔥 MÉTODO PRINCIPAL: fireTransition
-    // --------------------------------------------------------
+    // MÉTODO PRINCIPAL: fireTransition
     public boolean fireTransition(int t) {
 
-        if (redDePetri.isTermino())
+        if (redDePetri.isTermino()) {
             return false;
+        }
         try {
+            // Se toma el mutex
             mutex.acquire();
 
-            while (true) {
+            outer: while (true) {
 
+                // Se verifica si es una transicion temporal
                 switch (alfaYBetas.get(t).verificar()) {
 
                     case BLOQUEAR -> {
@@ -111,9 +112,9 @@ public class Monitor implements MonitorInterface {
                         long transcurrido = System.currentTimeMillis() - inicio;
                         long faltante = alfaYBetas.get(t).getAlfa() - transcurrido;
 
-                        if (faltante < 1)
+                        if (faltante < 1){
                             faltante = 1;
-
+                        }
                         mutex.release();
                         synchronized (getLlave(t)) {
                             getLlave(t).wait(faltante);
@@ -126,17 +127,13 @@ public class Monitor implements MonitorInterface {
                     case BETA -> {
                         betaErrors += "\nT" + t + " excedió β por " + alfaYBetas.get(t).getTiempoExcedido() + " ms";
                         // pero NO bloquea → continúa
-                        break;
+                        break outer;
                     }
 
                     case OK -> {
-                        break; // sale del while
+                        break outer; // sale del while
                     }
                 }
-
-                // Si no es BLOQUEAR, salimos del while
-                if (alfaYBetas.get(t).verificar() != AlfaYBeta.Estado.BLOQUEAR)
-                    break;
             }
 
             while (redDePetri.sensibilizado(t) == false || !politicaPermite(t)) {
@@ -144,7 +141,7 @@ public class Monitor implements MonitorInterface {
                 mutex.acquire(); // re-adquirir tras despertar
             }
 
-            // Disparo real
+            // Disparo real en la red de petri
             disparar(t);
             // Actualizar quién puede seguir
             despertarHilos();
@@ -157,18 +154,14 @@ public class Monitor implements MonitorInterface {
         return true;
     }
 
-    // --------------------------------------------------------
-    // 🔍 Política: consulta si t pertenece al conjunto permitido
-    // --------------------------------------------------------
+    // Política: consulta si t pertenece al conjunto permitido
     private boolean politicaPermite(int t) {
         if (politicaAdmite == -1)
             return true;
         return t == politicaAdmite;
     }
 
-    // --------------------------------------------------------
-    // 😴 dormir hilo
-    // --------------------------------------------------------
+    // dormir hilo en su cola de condicion
     private void dormirHilo(int t) throws InterruptedException {
         synchronized (getLlave(t)) {
             mutex.release();
@@ -176,9 +169,7 @@ public class Monitor implements MonitorInterface {
         }
     }
 
-    // --------------------------------------------------------
-    // 🚀 disparar transición
-    // --------------------------------------------------------
+    // disparar transición por la red de petri
     private void disparar(int t) {
         alfaYBetas.get(t).setInicio(0);
         if (!redDePetri.dispararTransicion(t)) {
@@ -204,9 +195,7 @@ public class Monitor implements MonitorInterface {
         }
     }
 
-    // --------------------------------------------------------
-    // 🔔 despertar hilos según política
-    // --------------------------------------------------------
+    // despertar hilos según política
     private void despertarHilos() {
         List<Integer> S = redDePetri.getSensibilizadas();
         for (int i = 0; i < S.size(); i++) {

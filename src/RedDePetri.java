@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RedDePetri {
-    
+
     private int[][] matrizIncidencia = new int[][] {
             { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
             { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
@@ -26,8 +26,7 @@ public class RedDePetri {
     private ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
 
     // simula la transicion 11, llevando registro, pero sin cambiar de estado (Se
-    // pueden borrar si se
-    // cambia de red)
+    // pueden borrar si se cambia de red)
     private int simT11 = 0; // numero de transiciones T11 disparadas
     private int maxClient; // Cantidad de clientes por atender
     private boolean termino = false; // comprobar si todos los clientes terminaron
@@ -49,7 +48,7 @@ public class RedDePetri {
         return marcado;
     }
 
-    public ArrayList<AlfaYBeta> getAlfayBeta(){
+    public ArrayList<AlfaYBeta> getAlfayBeta() {
         return alfaybetas;
     }
 
@@ -61,6 +60,7 @@ public class RedDePetri {
         return matrizIncidencia;
     }
 
+    // Comprueba si no hay valores negativos en el nuevo estado
     public boolean sensibilizado(int t) {
         int[] nuevo = nuevoMarcado(t);
         for (int x : nuevo)
@@ -69,6 +69,7 @@ public class RedDePetri {
         return true;
     }
 
+    // Realiza el calculo del nuevo marcado en funcion de la ecuacion fundamental
     private int[] nuevoMarcado(int t) {
         int[] S = new int[matrizIncidencia[0].length];
         S[t] = 1;
@@ -94,6 +95,7 @@ public class RedDePetri {
         return false;
     }
 
+    // Vector de sensibilizado estructural
     public List<Integer> getSensibilizadas() {
         List<Integer> sensibilizadas = new ArrayList<>();
         for (int t = 0; t < matrizIncidencia[0].length; t++) {
