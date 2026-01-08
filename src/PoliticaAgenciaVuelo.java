@@ -14,7 +14,6 @@ public class PoliticaAgenciaVuelo implements Politica {
     POLITICA_2(2, "Politica priorizada");
 
     private final int codigo;
-    private final String descripcion;
 
     /**
      * Constructor para inicializar los valores de la enumeración.
@@ -24,7 +23,6 @@ public class PoliticaAgenciaVuelo implements Politica {
      */
     Politicas(int codigo, String descripcion) {
       this.codigo = codigo;
-      this.descripcion = descripcion;
     }
 
     /**
@@ -34,15 +32,6 @@ public class PoliticaAgenciaVuelo implements Politica {
      */
     public int getCodigo() {
       return codigo;
-    }
-
-    /**
-     * Obtiene la descripción de la política.
-     *
-     * @return la descripción de la política.
-     */
-    public String getDescripcion() {
-      return descripcion;
     }
 
     /**
@@ -102,7 +91,7 @@ public class PoliticaAgenciaVuelo implements Politica {
    * @return la transición seleccionada según la prioridad.
    */
   private int politicaPriorizada(int i, int j) {
-    if (i == 2) {
+    if (i == 2 || i == 3 || j==2 || j == 3) {
       return Math.random() < 0.75 ? i : j;
     } else {
       return Math.random() < 0.8 ? i : j;

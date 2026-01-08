@@ -16,7 +16,7 @@ public class Main {
 
   public static void main(String[] args) {
 
-    int numero = 1;
+    int numero = 2;
     PoliticaAgenciaVuelo politica = null;
 
     try {
@@ -24,7 +24,6 @@ public class Main {
     } catch (PoliticaInexistenteException pie) {
       System.out.println("Politica Invalida");
     }
-
     // Se genera la instancia de la red de petri, la misma genera su matriz y su
     // marcado inicial
     RedDePetri redDePetri = new RedDePetri();

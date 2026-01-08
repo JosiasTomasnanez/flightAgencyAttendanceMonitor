@@ -137,7 +137,7 @@ public class Log implements Runnable {
               + marcado[14]
               + "\n");
       try {
-        Thread.sleep(50); // Duracion del proceso
+        Thread.sleep(250); // Duracion del proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
