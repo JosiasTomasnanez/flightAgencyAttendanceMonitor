@@ -16,21 +16,14 @@ public class Main {
 
   public static void main(String[] args) {
 
-    int numero = 2;
-    PoliticaAgenciaVuelo politica = null;
-
-    try {
-      politica = new PoliticaAgenciaVuelo(numero);
-    } catch (PoliticaInexistenteException pie) {
-      System.out.println("Politica Invalida");
-    }
+    int numero_politica = 2;
     // Se genera la instancia de la red de petri, la misma genera su matriz y su
     // marcado inicial
-    RedDePetri redDePetri = new RedDePetri();
+    RedDePetri redDePetri = new RedDePetri(numero_politica);
 
     // La red de petri es la que sabe que transiciones son temporales y que
     // intervalos tiene
-    Monitor.getInstance(redDePetri, politica, redDePetri.getAlfayBeta());
+    Monitor.getInstance(redDePetri, redDePetri.getAlfayBeta());
 
     {
       PantallaCarga pantalla = new PantallaCarga();

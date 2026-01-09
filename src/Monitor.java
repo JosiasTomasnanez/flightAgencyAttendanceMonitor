@@ -14,10 +14,8 @@ public class Monitor implements MonitorInterface {
     private static final Semaphore mutex = new Semaphore(1); // Semaforo para exclusion mutua
     private final HashMap<Integer, Object> llaves = new HashMap<>(); // Mapa de llaves para sincronización
     private RedDePetri redDePetri;
-    public Politica politica; // Politica para manejo de conflictos entre transiciones
     private ArrayList<AlfaYBeta> alfaYBetas;
     private String betaErrors = "";
-    private Integer politicaAdmite = -1;
 
     /**
      * Constructor privado de la clase Monitor.
@@ -27,12 +25,9 @@ public class Monitor implements MonitorInterface {
      * @param politica         Política para manejo de conflictos.
      * @throws IllegalArgumentException Si los parámetros son inválidos.
      */
-    private Monitor(RedDePetri redDePetri, Politica politica, ArrayList<AlfaYBeta> alfaYBetas) {
+    private Monitor(RedDePetri redDePetri, ArrayList<AlfaYBeta> alfaYBetas) {
         if (redDePetri == null) {
             throw new IllegalArgumentException("La red de Petri no puede ser nula.");
-        }
-        if (politica == null) {
-            throw new IllegalArgumentException("La política no puede ser nula.");
         }
         if (alfaYBetas.size() < redDePetri.getMatrizIncidencia()[0].length) {
             throw new IllegalArgumentException(
@@ -41,7 +36,6 @@ public class Monitor implements MonitorInterface {
         }
         this.alfaYBetas = alfaYBetas;
         this.redDePetri = redDePetri;
-        this.politica = politica;
 
     }
 
@@ -67,9 +61,9 @@ public class Monitor implements MonitorInterface {
      * @param politica   Política para manejo de conflictos.
      * @return Instancia única del monitor.
      */
-    public static Monitor getInstance(RedDePetri redDePetri, Politica politica, ArrayList<AlfaYBeta> alfaYBetas) {
+    public static Monitor getInstance(RedDePetri redDePetri, ArrayList<AlfaYBeta> alfaYBetas) {
         if (m == null) {
-            m = new Monitor(redDePetri, politica, alfaYBetas);
+            m = new Monitor(redDePetri, alfaYBetas);
         }
         return m;
     }
@@ -112,7 +106,7 @@ public class Monitor implements MonitorInterface {
                         long transcurrido = System.currentTimeMillis() - inicio;
                         long faltante = alfaYBetas.get(t).getAlfa() - transcurrido;
 
-                        if (faltante < 1){
+                        if (faltante < 1) {
                             faltante = 1;
                         }
                         mutex.release();
@@ -136,13 +130,17 @@ public class Monitor implements MonitorInterface {
                 }
             }
 
-            while (redDePetri.sensibilizado(t) == false || !politicaPermite(t)) {
+            while (!redDePetri.dispararTransicion(t)) {
+                if(redDePetri.isTermino()){
+                    notificarATodos();
+                    return false;
+                }
                 dormirHilo(t);
                 mutex.acquire(); // re-adquirir tras despertar
             }
 
-            // Disparo real en la red de petri
-            disparar(t);
+            actualizarAlfaYBeta(t);
+
             // Actualizar quién puede seguir
             despertarHilos();
 
@@ -154,13 +152,6 @@ public class Monitor implements MonitorInterface {
         return true;
     }
 
-    // Política: consulta si t pertenece al conjunto permitido
-    private boolean politicaPermite(int t) {
-        if (politicaAdmite == -1)
-            return true;
-        return t == politicaAdmite;
-    }
-
     // dormir hilo en su cola de condicion
     private void dormirHilo(int t) throws InterruptedException {
         synchronized (getLlave(t)) {
@@ -169,18 +160,8 @@ public class Monitor implements MonitorInterface {
         }
     }
 
-    // disparar transición por la red de petri
-    private void disparar(int t) {
-        alfaYBetas.get(t).setInicio(0);
-        if (!redDePetri.dispararTransicion(t)) {
-            notificarATodos();
-            return;
-        }
-        actualizarAlfaYBeta();
-
-    }
-
-    private void actualizarAlfaYBeta() {
+    private void actualizarAlfaYBeta(int transicionDisparada) {
+        alfaYBetas.get(transicionDisparada).setInicio(0);
         for (int t = 0; redDePetri.getMatrizIncidencia()[0].length > t; t++) {
             if (redDePetri.sensibilizado(t) && alfaYBetas.get(t).getInicio() <= 0)
                 alfaYBetas.get(t).iniciar();
@@ -205,8 +186,7 @@ public class Monitor implements MonitorInterface {
                 int t2 = S.get(j);
 
                 if (redDePetri.compartenLugaresDeEntrada(t1, t2)) {
-
-                    notificar(politica.llamadaApolitica(t1, t2));
+                    notificar(redDePetri.getPolitica().llamadaApolitica(t1, t2));
                     return; // solo se admite una transicion
                 }
             }

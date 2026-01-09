@@ -30,8 +30,14 @@ public class RedDePetri {
     private int simT11 = 0; // numero de transiciones T11 disparadas
     private int maxClient; // Cantidad de clientes por atender
     private boolean termino = false; // comprobar si todos los clientes terminaron
+    private Politica politica;
 
-    public RedDePetri() {
+    public RedDePetri(int num_politica) {
+        try {
+            this.politica = new PoliticaAgenciaVuelo(num_politica);
+        } catch (PoliticaInexistenteException pie) {
+            System.out.println("Politica Invalida");
+        }
         maxClient = this.marcado[0];
         for (int i = 0; CANTIDAD_TRANSICIONES > i; i++) {
             alfaybetas.add(new AlfaYBeta());
@@ -42,6 +48,10 @@ public class RedDePetri {
         alfaybetas.get(8).setAlfaYBeta(16, 81);
         alfaybetas.get(9).setAlfaYBeta(20, 81);
         alfaybetas.get(10).setAlfaYBeta(24, 91);
+    }
+
+    public Politica getPolitica(){
+        return politica;
     }
 
     public int[] getMarcado() {
@@ -103,6 +113,7 @@ public class RedDePetri {
                 sensibilizadas.add(t);
             }
         }
+        //System.out.println("Transiciones sensibilizadas: " + sensibilizadas);
         return sensibilizadas;
     }
 
