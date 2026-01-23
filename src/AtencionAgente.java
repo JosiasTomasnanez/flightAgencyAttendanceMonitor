@@ -43,7 +43,7 @@ public class AtencionAgente implements Runnable {
           return;
         }
         try {
-          Thread.sleep(200); // Duracion del proceso
+          Thread.sleep(140); // Duracion del proceso
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }
@@ -55,7 +55,7 @@ public class AtencionAgente implements Runnable {
           return;
         }
         try {
-          Thread.sleep(200); // Duracion del proceso
+          Thread.sleep(140); // Duracion del proceso
         } catch (InterruptedException e) {
           throw new RuntimeException(e);
         }

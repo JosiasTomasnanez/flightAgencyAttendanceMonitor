@@ -38,7 +38,7 @@ public class Cancelacion implements Runnable {
         return; // Disparo de T7
       }
       try {
-        Thread.sleep(70); // Duracion del proceso
+        Thread.sleep(90); // Duracion del proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }

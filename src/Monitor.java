@@ -177,26 +177,17 @@ public class Monitor implements MonitorInterface {
     }
 
     // despertar hilos según política
-    private void despertarHilos() {
-        List<Integer> S = redDePetri.getSensibilizadas();
-        for (int i = 0; i < S.size(); i++) {
-            for (int j = i + 1; j < S.size(); j++) {
-
-                int t1 = S.get(i);
-                int t2 = S.get(j);
-
-                if (redDePetri.compartenLugaresDeEntrada(t1, t2)) {
-                    notificar(redDePetri.getPolitica().llamadaApolitica(t1, t2));
-                    return; // solo se admite una transicion
-                }
-            }
+   private void despertarHilos() {
+        int transicionAdespertar = redDePetri.verificarConflicto();
+        if(transicionAdespertar > 0){
+            notificar(transicionAdespertar);
+            return;
         }
-
-        for (int t : S) {
+        for (int t : redDePetri.getSensibilizadas()) {
             notificar(t);
-        }
+        } 
     }
-
+    
     private void notificar(int t) {
         synchronized (getLlave(t)) {
             getLlave(t).notifyAll();

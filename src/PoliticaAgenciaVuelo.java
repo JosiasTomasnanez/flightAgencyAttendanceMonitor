@@ -93,11 +93,9 @@ public class PoliticaAgenciaVuelo implements Politica {
   private int politicaPriorizada(int i, int j) {
     if ((i == 2 && j == 3) || (i == 3 && j == 2)) {
       int resultado = Math.random() <= 0.75 ? 2 : 3;
-      System.out.println("Conflicto 2 vs 3: Seleccionada " + resultado);
       return resultado;
     } else {
       int resultado = Math.random() <= 0.8 ? 6 : 7;
-      System.out.println("Conflicto 6 vs 7: Seleccionada " + resultado);
       return resultado;
     }
   }

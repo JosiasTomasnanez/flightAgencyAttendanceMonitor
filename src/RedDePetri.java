@@ -119,9 +119,9 @@ public class RedDePetri {
 
     public boolean dispararTransicion(int t) {
         // Simulación T11 especial
-        secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1
         if (t == 11) {
             simT11++;
+            secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1
             PantallaCarga.incrementarPorcentaje(simT11, maxClient);
 
             if (simT11 == maxClient || comprobarTermino()) {
@@ -133,8 +133,9 @@ public class RedDePetri {
         }
         // Verificar si la transición está sensibilizada
         if (!sensibilizado(t)) {
-            throw new IllegalStateException("La transición " + t + " no está sensibilizada.");
+            return false;
         }
+        secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1
         marcado = nuevoMarcado(t);
 
         return true;
@@ -150,5 +151,22 @@ public class RedDePetri {
                 return false;
         }
         return true;
+    }
+
+    public int verificarConflicto() {
+        
+        List<Integer> S = getSensibilizadas();
+        for (int i = 0; i < S.size(); i++) {
+            for (int j = i + 1; j < S.size(); j++) {
+
+                int t1 = S.get(i);
+                int t2 = S.get(j);
+                
+                if (compartenLugaresDeEntrada(t1, t2)) {
+                   return getPolitica().llamadaApolitica(t1, t2);
+                }
+            }
+        }
+        return -1;
     }
 }

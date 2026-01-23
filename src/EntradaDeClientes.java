@@ -38,15 +38,17 @@ public class EntradaDeClientes implements Runnable {
   @Override
   public void run() {
     while (true) {
-      if (!monitor.fireTransition(0))
+      if (!monitor.fireTransition(0)){
         return; // Disparo de T0
+      }
       try {
-        Thread.sleep(40); // Duracion del Proceso
+        Thread.sleep(150); // Duracion del Proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      if (!monitor.fireTransition(1))
+      if (!monitor.fireTransition(1)){
         return; // Disparo de T1
+      }
     }
   }
 
