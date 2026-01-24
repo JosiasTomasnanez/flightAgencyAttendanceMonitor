@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-
 /**
  * Clase principal que gestiona la ejecución del programa de la agencia de
  * vuelos. Esta clase se encarga de la interacción con el usuario,

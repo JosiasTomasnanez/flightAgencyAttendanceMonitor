@@ -1,3 +1,4 @@
+
 /**
  * Clase que simula el proceso de entrada de clientes a una agencia,
  * implementando la interfaz
