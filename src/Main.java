@@ -16,7 +16,7 @@ public class Main {
 
   public static void main(String[] args) {
 
-    ConfiguracionInicial configuracionInicial= new ConfiguracionInicial();
+    ConfiguracionInicial configuracionInicial = new ConfiguracionInicial();
 
     {
       PantallaCarga pantalla = new PantallaCarga();
@@ -32,25 +32,22 @@ public class Main {
       hilos.add(factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
     }
 
-    for (int i = 0; i < CANTIDAD_HILOS_AGENTE_2; i++){
+    for (int i = 0; i < CANTIDAD_HILOS_AGENTE_2; i++) {
       hilos.add(factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE2, Monitor.getInstance())));
     }
-      
 
     // 1 Hilo encargado de la cancelacion
-    for (int i = 0; i < CANTIDAD_HILOS_CANCELACION; i++){
+    for (int i = 0; i < CANTIDAD_HILOS_CANCELACION; i++) {
       hilos.add(factory.newThread(new Cancelacion(Monitor.getInstance())));
     }
-      
 
     // 1 Hilo encargado de la confirmacion y pago
-    for (int i = 0; i < CANTIDAD_HILOS_CONFIRMACION; i++){
+    for (int i = 0; i < CANTIDAD_HILOS_CONFIRMACION; i++) {
       hilos.add(factory.newThread(new ConfirmacionYPago(Monitor.getInstance())));
     }
-      
 
     // 5 hilos encargados de la generacion y entrada de clientes
-    for (int i = 0; i < CANTIDAD_HILOS_GEN_CLIENTES; i++){
+    for (int i = 0; i < CANTIDAD_HILOS_GEN_CLIENTES; i++) {
       hilos.add(factory.newThread(new EntradaDeClientes(Monitor.getInstance())));
     }
 
@@ -68,10 +65,7 @@ public class Main {
         throw new RuntimeException(e);
       }
     }
-    System.out.println( "Fin de la ejecucion");
+    System.out.println("Fin de la ejecucion");
   }
 
 }
-
-
-

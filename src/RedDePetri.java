@@ -14,17 +14,17 @@ public class RedDePetri {
     private boolean termino = false; // comprobar si todos los clientes terminaron
     private Politica politica;
 
-    public RedDePetri( int[][] matrizIncidencia,int[] marcado, Politica politica, ArrayList<AlfaYBeta> alfaYbetas) {
-        
-        this.politica= politica;
+    public RedDePetri(int[][] matrizIncidencia, int[] marcado, Politica politica, ArrayList<AlfaYBeta> alfaYbetas) {
+
+        this.politica = politica;
         this.matrizIncidencia = matrizIncidencia;
         this.marcado = marcado;
         maxClient = this.marcado[0];
-        this.alfaybetas= alfaYbetas;
-        
+        this.alfaybetas = alfaYbetas;
+
     }
 
-    public Politica getPolitica(){
+    public Politica getPolitica() {
         return politica;
     }
 
@@ -87,7 +87,7 @@ public class RedDePetri {
                 sensibilizadas.add(t);
             }
         }
-        //System.out.println("Transiciones sensibilizadas: " + sensibilizadas);
+        // System.out.println("Transiciones sensibilizadas: " + sensibilizadas);
         return sensibilizadas;
     }
 
@@ -128,16 +128,16 @@ public class RedDePetri {
     }
 
     public int verificarConflicto() {
-        
+
         List<Integer> S = getSensibilizadas();
         for (int i = 0; i < S.size(); i++) {
             for (int j = i + 1; j < S.size(); j++) {
 
                 int t1 = S.get(i);
                 int t2 = S.get(j);
-                
+
                 if (compartenLugaresDeEntrada(t1, t2)) {
-                   return getPolitica().llamadaApolitica(t1, t2);
+                    return getPolitica().llamadaApolitica(t1, t2);
                 }
             }
         }

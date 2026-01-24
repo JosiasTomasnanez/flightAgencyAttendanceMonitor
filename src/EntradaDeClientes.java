@@ -38,7 +38,7 @@ public class EntradaDeClientes implements Runnable {
   @Override
   public void run() {
     while (true) {
-      if (!monitor.fireTransition(0)){
+      if (!monitor.fireTransition(0)) {
         return; // Disparo de T0
       }
       try {
@@ -46,7 +46,7 @@ public class EntradaDeClientes implements Runnable {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      if (!monitor.fireTransition(1)){
+      if (!monitor.fireTransition(1)) {
         return; // Disparo de T1
       }
     }

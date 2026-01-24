@@ -18,6 +18,7 @@ public class Monitor implements MonitorInterface {
 
     /**
      * Constructor privado de la clase Monitor.
+     * 
      * @throws IllegalArgumentException Si los parámetros son inválidos.
      */
     private Monitor(RedDePetri redDePetri) {
@@ -121,7 +122,7 @@ public class Monitor implements MonitorInterface {
             }
 
             while (!redDePetri.dispararTransicion(t)) {
-                if(redDePetri.isTermino()){
+                if (redDePetri.isTermino()) {
                     notificarATodos();
                     return false;
                 }
@@ -167,17 +168,17 @@ public class Monitor implements MonitorInterface {
     }
 
     // despertar hilos según política
-   private void despertarHilos() {
+    private void despertarHilos() {
         int transicionAdespertar = redDePetri.verificarConflicto();
-        if(transicionAdespertar > 0){
+        if (transicionAdespertar > 0) {
             notificar(transicionAdespertar);
             return;
         }
         for (int t : redDePetri.getSensibilizadas()) {
             notificar(t);
-        } 
+        }
     }
-    
+
     private void notificar(int t) {
         synchronized (getLlave(t)) {
             getLlave(t).notifyAll();
