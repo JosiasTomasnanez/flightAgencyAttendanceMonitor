@@ -16,14 +16,7 @@ public class Main {
 
   public static void main(String[] args) {
 
-    int numero_politica = 2;
-    // Se genera la instancia de la red de petri, la misma genera su matriz y su
-    // marcado inicial
-    RedDePetri redDePetri = new RedDePetri(numero_politica);
-
-    // La red de petri es la que sabe que transiciones son temporales y que
-    // intervalos tiene
-    Monitor.getInstance(redDePetri, redDePetri.getAlfayBeta());
+    ConfiguracionInicial configuracionInicial= new ConfiguracionInicial();
 
     {
       PantallaCarga pantalla = new PantallaCarga();
@@ -62,7 +55,7 @@ public class Main {
     }
 
     // Hilo encargado del Log
-    hilos.add(factory.newThread(new Log(redDePetri)));
+    hilos.add(factory.newThread(new Log(configuracionInicial.getRedDePetri())));
 
     // Inicializacion de los hilos
     for (Thread h : hilos) {
@@ -77,4 +70,8 @@ public class Main {
     }
     System.out.println( "Fin de la ejecucion");
   }
+
 }
+
+
+

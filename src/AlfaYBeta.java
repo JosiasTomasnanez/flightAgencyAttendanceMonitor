@@ -3,7 +3,7 @@ public class AlfaYBeta {
 
     public static enum Estado {
         OK, // puede dispararse
-        BLOQUEAR, // no alcanzó alfa → bloquear
+        ALFA, // no alcanzó alfa → bloquear
         BETA // excedió beta → loguear y permitir
     }
 
@@ -64,7 +64,7 @@ public class AlfaYBeta {
         long elapsed = System.currentTimeMillis() - inicio;
 
         if (elapsed < alfa)
-            return Estado.BLOQUEAR;
+            return Estado.ALFA;
 
         if (elapsed > beta)
             return Estado.BETA;
