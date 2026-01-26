@@ -37,7 +37,7 @@ public class ConfirmacionYPago implements Runnable {
   @Override
   public void run() {
     while (true) {
-      if (!monitor.fireTransition(6)){
+      if (!monitor.fireTransition(6)) {
         return; // Disparo de T6
       }
       try {
@@ -45,7 +45,7 @@ public class ConfirmacionYPago implements Runnable {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      if(!monitor.fireTransition(9)){
+      if (!monitor.fireTransition(9)) {
         return; // Disparo de T9
       }
       try {
@@ -53,10 +53,10 @@ public class ConfirmacionYPago implements Runnable {
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
-      if (!monitor.fireTransition(10)){
+      if (!monitor.fireTransition(10)) {
         return; // Disparo de T10
       }
-      if (!monitor.fireTransition(11)){
+      if (!monitor.fireTransition(11)) {
         return; // Disparo de T11
       }
     }

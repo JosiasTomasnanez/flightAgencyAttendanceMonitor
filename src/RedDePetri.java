@@ -3,28 +3,10 @@ import java.util.List;
 
 public class RedDePetri {
 
-    private int[][] matrizIncidencia = new int[][] {
-            { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 },
-            { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { -1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 1, 0, 0, -1, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, -1, 0, 0, 1, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, -1, 1, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 1, -1, 0, 0, 0, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 1, 1, -1, -1, 0, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, -1, -1, 1, 0, 1, 0 },
-            { 0, 0, 0, 0, 0, 0, 1, 0, 0, -1, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 1, -1, 0, 0, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, -1, 0 },
-            { 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1, -1 }
-    }; // Matriz de incidencia de la red de Petri
-    public final int CANTIDAD_TRANSICIONES = matrizIncidencia[0].length;
-    private int[] marcado = new int[] { 186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0 }; // Marcado de la red de Petri
+    private int[] marcado; // Marcado de la red de Petri
     private String secuencia = ""; // Secuencia de transiciones disparadas
-    private ArrayList<AlfaYBeta> alfaybetas = new ArrayList<>();
-
+    private ArrayList<AlfaYBeta> alfaybetas;
+    private int[][] matrizIncidencia;
     // simula la transicion 11, llevando registro, pero sin cambiar de estado (Se
     // pueden borrar si se cambia de red)
     private int simT11 = 0; // numero de transiciones T11 disparadas
@@ -32,25 +14,17 @@ public class RedDePetri {
     private boolean termino = false; // comprobar si todos los clientes terminaron
     private Politica politica;
 
-    public RedDePetri(int num_politica) {
-        try {
-            this.politica = new PoliticaAgenciaVuelo(num_politica);
-        } catch (PoliticaInexistenteException pie) {
-            System.out.println("Politica Invalida");
-        }
+    public RedDePetri(int[][] matrizIncidencia, int[] marcado, Politica politica, ArrayList<AlfaYBeta> alfaYbetas) {
+
+        this.politica = politica;
+        this.matrizIncidencia = matrizIncidencia;
+        this.marcado = marcado;
         maxClient = this.marcado[0];
-        for (int i = 0; CANTIDAD_TRANSICIONES > i; i++) {
-            alfaybetas.add(new AlfaYBeta());
-        }
-        alfaybetas.get(1).setAlfaYBeta(8, 41);
-        alfaybetas.get(4).setAlfaYBeta(24, 201);
-        alfaybetas.get(5).setAlfaYBeta(24, 201);
-        alfaybetas.get(8).setAlfaYBeta(16, 81);
-        alfaybetas.get(9).setAlfaYBeta(20, 81);
-        alfaybetas.get(10).setAlfaYBeta(24, 91);
+        this.alfaybetas = alfaYbetas;
+
     }
 
-    public Politica getPolitica(){
+    public Politica getPolitica() {
         return politica;
     }
 
@@ -113,7 +87,7 @@ public class RedDePetri {
                 sensibilizadas.add(t);
             }
         }
-        //System.out.println("Transiciones sensibilizadas: " + sensibilizadas);
+        // System.out.println("Transiciones sensibilizadas: " + sensibilizadas);
         return sensibilizadas;
     }
 
@@ -154,16 +128,16 @@ public class RedDePetri {
     }
 
     public int verificarConflicto() {
-        
+
         List<Integer> S = getSensibilizadas();
         for (int i = 0; i < S.size(); i++) {
             for (int j = i + 1; j < S.size(); j++) {
 
                 int t1 = S.get(i);
                 int t2 = S.get(j);
-                
+
                 if (compartenLugaresDeEntrada(t1, t2)) {
-                   return getPolitica().llamadaApolitica(t1, t2);
+                    return getPolitica().llamadaApolitica(t1, t2);
                 }
             }
         }

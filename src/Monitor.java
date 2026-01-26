@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -19,23 +18,15 @@ public class Monitor implements MonitorInterface {
 
     /**
      * Constructor privado de la clase Monitor.
-     *
-     * @param marcado          Marcado inicial de la red.
-     * @param matrizIncidencia Matriz de incidencia de la red.
-     * @param politica         Política para manejo de conflictos.
+     * 
      * @throws IllegalArgumentException Si los parámetros son inválidos.
      */
-    private Monitor(RedDePetri redDePetri, ArrayList<AlfaYBeta> alfaYBetas) {
+    private Monitor(RedDePetri redDePetri) {
         if (redDePetri == null) {
             throw new IllegalArgumentException("La red de Petri no puede ser nula.");
         }
-        if (alfaYBetas.size() < redDePetri.getMatrizIncidencia()[0].length) {
-            throw new IllegalArgumentException(
-                    "La lista de alfas y betas debe contener la misma cantidad de"
-                            + "elementos que las transiciones en la red de petri");
-        }
-        this.alfaYBetas = alfaYBetas;
         this.redDePetri = redDePetri;
+        this.alfaYBetas = redDePetri.getAlfayBeta();
 
     }
 
@@ -61,9 +52,9 @@ public class Monitor implements MonitorInterface {
      * @param politica   Política para manejo de conflictos.
      * @return Instancia única del monitor.
      */
-    public static Monitor getInstance(RedDePetri redDePetri, ArrayList<AlfaYBeta> alfaYBetas) {
+    public static Monitor getInstance(RedDePetri redDePetri) {
         if (m == null) {
-            m = new Monitor(redDePetri, alfaYBetas);
+            m = new Monitor(redDePetri);
         }
         return m;
     }
@@ -101,7 +92,7 @@ public class Monitor implements MonitorInterface {
                 // Se verifica si es una transicion temporal
                 switch (alfaYBetas.get(t).verificar()) {
 
-                    case BLOQUEAR -> {
+                    case ALFA -> {
                         long inicio = alfaYBetas.get(t).getInicio();
                         long transcurrido = System.currentTimeMillis() - inicio;
                         long faltante = alfaYBetas.get(t).getAlfa() - transcurrido;
@@ -131,7 +122,7 @@ public class Monitor implements MonitorInterface {
             }
 
             while (!redDePetri.dispararTransicion(t)) {
-                if(redDePetri.isTermino()){
+                if (redDePetri.isTermino()) {
                     notificarATodos();
                     return false;
                 }
@@ -177,17 +168,17 @@ public class Monitor implements MonitorInterface {
     }
 
     // despertar hilos según política
-   private void despertarHilos() {
+    private void despertarHilos() {
         int transicionAdespertar = redDePetri.verificarConflicto();
-        if(transicionAdespertar > 0){
+        if (transicionAdespertar > 0) {
             notificar(transicionAdespertar);
             return;
         }
         for (int t : redDePetri.getSensibilizadas()) {
             notificar(t);
-        } 
+        }
     }
-    
+
     private void notificar(int t) {
         synchronized (getLlave(t)) {
             getLlave(t).notifyAll();

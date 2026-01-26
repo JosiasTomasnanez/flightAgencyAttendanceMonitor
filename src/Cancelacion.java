@@ -43,10 +43,10 @@ public class Cancelacion implements Runnable {
         throw new RuntimeException(e);
       }
       if (!monitor.fireTransition(8)) {
-        return; 
+        return;
       }
       if (!monitor.fireTransition(11)) {
-        return; 
+        return;
       }
     }
   }
