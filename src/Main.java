@@ -26,6 +26,11 @@ public class Main {
     OurThreadFactory factory = new OurThreadFactory();
     ArrayList<Thread> hilos = new ArrayList<>();
 
+    // 5 hilos encargados de la generacion y entrada de clientes
+    for (int i = 0; i < CANTIDAD_HILOS_GEN_CLIENTES; i++) {
+      hilos.add(factory.newThread(new EntradaDeClientes(Monitor.getInstance())));
+    }
+
     // 1 hilo por agente
     for (int i = 0; i < CANTIDAD_HILOS_AGENTE_1; i++) {
       hilos.add(factory.newThread(new AtencionAgente(NumeroDeAgente.AGENTE1, Monitor.getInstance())));
@@ -45,10 +50,7 @@ public class Main {
       hilos.add(factory.newThread(new ConfirmacionYPago(Monitor.getInstance())));
     }
 
-    // 5 hilos encargados de la generacion y entrada de clientes
-    for (int i = 0; i < CANTIDAD_HILOS_GEN_CLIENTES; i++) {
-      hilos.add(factory.newThread(new EntradaDeClientes(Monitor.getInstance())));
-    }
+    
 
     // Hilo encargado del Log
     hilos.add(factory.newThread(new Log(configuracionInicial.getRedDePetri())));
