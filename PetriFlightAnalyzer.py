@@ -21,7 +21,18 @@ invariante2 = 0
 invariante3 = 0
 invariante4 = 0
 
-line = re.subn(regex, grupos, transiciones, count=1)
+match = re.sub(regex,r'\g<1>\g<3>\g<7>\g<9>\g<12>\g<14>\g<18>\g<20>\g<22>\g<25>\g<27>\g<29>' , transiciones,1)
+
+if re.search(r"T0T1T3T4T7T8T11",match):
+    invariante1 = invariante1+1
+elif re.search(r"T0T1T3T4T6T9T10T11",match):
+    invariante2 = invariante2+1
+elif re.search(r"T0T1T2T5T7T8T11",match):
+    invariante3 = invariante3+1
+elif re.search(r"T0T1T2T5T6T9T10T11",match):
+    invariante4= invariante4+1
+
+line=re.subn(regex,grupos,transiciones,1)
 invariantes = 0
 
 while line[1] > 0:
