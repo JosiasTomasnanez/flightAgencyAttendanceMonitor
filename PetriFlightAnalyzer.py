@@ -21,23 +21,18 @@ invariante2 = 0
 invariante3 = 0
 invariante4 = 0
 
-match = re.sub(
-    regex,
-    r'\g<1>\g<3>\g<7>\g<9>\g<12>\g<14>\g<18>\g<20>\g<22>\g<25>\g<27>\g<29>',
-    transiciones,
-    count=1
-)
+match = re.sub(regex,r'\g<1>\g<3>\g<7>\g<9>\g<12>\g<14>\g<18>\g<20>\g<22>\g<25>\g<27>\g<29>' , transiciones,count=1)
 
-if re.search(r"T0T1T3T4T7T8T11", match):
-    invariante1 += 1
-elif re.search(r"T0T1T3T4T6T9T10T11", match):
-    invariante2 += 1
-elif re.search(r"T0T1T2T5T7T8T11", match):
-    invariante3 += 1
-elif re.search(r"T0T1T2T5T6T9T10T11", match):
-    invariante4 += 1
+if re.search(r"T0T1T3T4T7T8T11",match):
+    invariante1 = invariante1+1
+elif re.search(r"T0T1T3T4T6T9T10T11",match):
+    invariante2 = invariante2+1
+elif re.search(r"T0T1T2T5T7T8T11",match):
+    invariante3 = invariante3+1
+elif re.search(r"T0T1T2T5T6T9T10T11",match):
+    invariante4= invariante4+1
 
-line = re.subn(regex, grupos, transiciones, count=1)
+line=re.subn(regex,grupos,transiciones,count=1)
 invariantes = 0
 
 while line[1] > 0:
@@ -69,17 +64,36 @@ clientesAgente1 = inv3[1] + inv4[1]
 clientesAgente2 = inv1[1] + inv2[1]
 clientescancelar = inv1[1] + inv3[1]
 clientesconfirmar = inv2[1] + inv4[1]
+porcentaje_agente1 = (clientesAgente1)/(clientesAgente2+clientesAgente1)
+porcentaje_agente1 = round(porcentaje_agente1,1)
+porcentaje_agente2 = (clientesAgente2)/(clientesAgente2+clientesAgente1)
+porcentaje_agente2 = round(porcentaje_agente2,1)
+porcentaje_cancelar = (clientescancelar)/(clientescancelar+clientesconfirmar)
+porcentaje_cancelar = round(porcentaje_cancelar,1)
+porcentaje_confirmar = (clientesconfirmar)/(clientescancelar+clientesconfirmar)
+porcentaje_confirmar = round(porcentaje_confirmar,1)
 
 if line[0] == '':
+    print("---"*10)
     print('El test finalizo OK')
     print('Cantidad de invariantes:', invariantes)
+    print("---"*10)
     print(inv1)
     print(inv2)
     print(inv3)
     print(inv4)
-    print('Cantidad de clientes atendidos por Agente 1:', clientesAgente1)
-    print('Cantidad de clientes atendidos por Agente 2:', clientesAgente2)
-    print('Cantidad de clientes que confirmaron:', clientesconfirmar)
-    print('Cantidad de clientes que cancelaron:', clientescancelar)
+    print("---"*10)
+    print(f'Cantidad de clientes atendidos por Agente 1 : {clientesAgente1}')
+    print(f'Porcentaje atendido por Agente 1 : {porcentaje_agente1*100} %')
+    print("---"*10)
+    print(f'Cantidad de clientes atendidos por Agente 2 : {clientesAgente2}')
+    print(f'Porcentaje atendido por Agente 2 : {porcentaje_agente2*100} %')
+    print("---"*10)
+    print(f'Cantidad de clientes que confirmaron : {clientesconfirmar}')
+    print(f'Porcentaje de clientes que confirmaron : {porcentaje_confirmar*100} %')
+    print("---"*10)
+    print(f'Cantidad de clientes que cancelaron: {clientescancelar}')
+    print(f'Porcentaje de clientes que cancelaron : {porcentaje_cancelar*100} %')
+    print("---"*10)
 else:
     print('El test finalizo FAIL, han sobrado transiciones')

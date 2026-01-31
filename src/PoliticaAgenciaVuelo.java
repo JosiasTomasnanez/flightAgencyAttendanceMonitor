@@ -1,26 +1,28 @@
 /**
- * Clase que implementa la interfaz {@link Politica} para manejar la selección de transiciones en un
+ * Clase que implementa la interfaz {@link Politica} para manejar la selección
+ * de transiciones en un
  * modelo de red de Petri, con dos políticas posibles: balanceada y priorizada.
  */
 public class PoliticaAgenciaVuelo implements Politica {
 
-  /** Enumeración que define las políticas disponibles junto con su código y descripción. */
+  /**
+   * Enumeración que define las políticas disponibles junto con su código y
+   * descripción.
+   */
   private enum Politicas {
     POLITICA_1(1, "Politica balanceada"),
     POLITICA_2(2, "Politica priorizada");
 
     private final int codigo;
-    private final String descripcion;
 
     /**
      * Constructor para inicializar los valores de la enumeración.
      *
-     * @param codigo el código asociado a la política.
+     * @param codigo      el código asociado a la política.
      * @param descripcion la descripción de la política.
      */
     Politicas(int codigo, String descripcion) {
       this.codigo = codigo;
-      this.descripcion = descripcion;
     }
 
     /**
@@ -30,15 +32,6 @@ public class PoliticaAgenciaVuelo implements Politica {
      */
     public int getCodigo() {
       return codigo;
-    }
-
-    /**
-     * Obtiene la descripción de la política.
-     *
-     * @return la descripción de la política.
-     */
-    public String getDescripcion() {
-      return descripcion;
     }
 
     /**
@@ -58,8 +51,10 @@ public class PoliticaAgenciaVuelo implements Politica {
   }
 
   private int numeroPolitica; // numero identificador de la politica a usar
+
   /**
-   * Constructor de la clase que inicializa los contadores y establece la política.
+   * Constructor de la clase que inicializa los contadores y establece la
+   * política.
    *
    * @param numeroPolitica el código de la política a aplicar.
    * @throws PoliticaInexistenteException si el código de la política es inválido.
@@ -96,11 +91,12 @@ public class PoliticaAgenciaVuelo implements Politica {
    * @return la transición seleccionada según la prioridad.
    */
   private int politicaPriorizada(int i, int j) {
-    if(i == 2) {
-      return Math.random() < 0.75 ? i : j;
-    }
-    else {
-      return Math.random() < 0.8 ? i : j;
+    if ((i == 2 && j == 3) || (i == 3 && j == 2)) {
+      int resultado = Math.random() <= 0.75 ? 2 : 3;
+      return resultado;
+    } else {
+      int resultado = Math.random() <= 0.8 ? 6 : 7;
+      return resultado;
     }
   }
 
@@ -112,6 +108,6 @@ public class PoliticaAgenciaVuelo implements Politica {
    * @return la transición seleccionada con menor cantidad de disparos acumulados.
    */
   private int politicaBalanceada(int i, int j) {
-    return Math.random() < 0.5 ? i : j;
+    return Math.random() <= 0.5 ? i : j;
   }
 }

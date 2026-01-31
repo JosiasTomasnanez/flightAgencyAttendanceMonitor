@@ -3,13 +3,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * La clase {@code Log} se encarga de registrar información sobre el estado del sistema en un
- * archivo de log. Implementa {@code Runnable} para permitir que se ejecute en un hilo separado y
- * registre periódicamente el estado del sistema, incluyendo estadísticas sobre las transiciones y
- * los clientes.
+ * La clase {@code Log} se encarga de registrar información sobre el estado del
+ * sistema en un archivo de log. Implementa {@code Runnable} para permitir
+ * que se ejecute en un hilo separado y registre periódicamente el estado
+ * del sistema, incluyendo estadísticas sobre las transiciones y los clientes.
  *
- * <p>La clase usa un archivo de log denominado {@code log.txt}, y los datos se escriben en dicho
- * archivo de forma periódica con un intervalo de 100 ms, o al finalizar el proceso.
+ * La clase usa un archivo de log denominado {@code log.txt}, y los datos se
+ * escriben en dicho archivo de forma periódica con un intervalo de 100 ms,
+ * o al finalizar el proceso.
  */
 public class Log implements Runnable {
   private final long tiempo; // El tiempo de inicio del proceso de registro, en milisegundos.
@@ -26,17 +27,23 @@ public class Log implements Runnable {
     }
   }
 
-  /** Constructor de la clase {@code Log}, inicializa el tiempo de inicio del proceso. */
+  /**
+   * Constructor de la clase {@code Log}, inicializa el tiempo de inicio del
+   * proceso.
+   */
   public Log(RedDePetri redDePetri) {
     tiempo = System.currentTimeMillis();
     this.redDePetri = redDePetri;
   }
 
   /**
-   * Cuenta cuántas veces aparece una transición específica en una cadena de secuencia.
+   * Cuenta cuántas veces aparece una transición específica en una cadena de
+   * secuencia.
    *
-   * @param cadena La secuencia de transiciones donde se realizará la búsqueda.
-   * @param transicion El identificador de la transición a contar (por ejemplo, "T2").
+   * @param cadena     La secuencia de transiciones donde se realizará la
+   *                   búsqueda.
+   * @param transicion El identificador de la transición a contar (por ejemplo,
+   *                   "T2").
    * @return El número de veces que aparece la transición en la secuencia.
    * @throws IllegalArgumentException Si el formato de la transición no es válido.
    */
@@ -62,8 +69,10 @@ public class Log implements Runnable {
   }
 
   /**
-   * Metodo que ejecuta el hilo y registra información sobre el estado del sistema en el archivo de
-   * log. Se ejecuta en un ciclo hasta que {@code Monitor} indique que el proceso ha terminado.
+   * Metodo que ejecuta el hilo y registra información sobre el estado del sistema
+   * en el archivo de
+   * log. Se ejecuta en un ciclo hasta que {@code Monitor} indique que el proceso
+   * ha terminado.
    */
   @Override
   public void run() {
@@ -94,7 +103,7 @@ public class Log implements Runnable {
             "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
                 + Monitor.getInstance().getBetaErrors());
         return;
-      } 
+      }
       int[] marcado = redDePetri.getMarcado();
       pw.println(
           "Clientes por entrar: "
@@ -128,12 +137,11 @@ public class Log implements Runnable {
               + marcado[14]
               + "\n");
       try {
-        Thread.sleep(50); // Duracion del proceso
+        Thread.sleep(250); // Duracion del proceso
       } catch (InterruptedException e) {
         throw new RuntimeException(e);
       }
     }
-
 
   }
 
@@ -167,7 +175,7 @@ public class Log implements Runnable {
   }
 
   private String detectPythonInterpreter() {
-    String[] interpreters = {"python3", "python", "python2"};
+    String[] interpreters = { "python3", "python", "python2" };
     for (String interpreter : interpreters) {
       try {
         ProcessBuilder processBuilder = new ProcessBuilder(interpreter, "--version");

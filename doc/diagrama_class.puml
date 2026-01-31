@@ -1,6 +1,6 @@
 @startuml clases
 
-class main{
+class Main{
     + void main()
 }
 
@@ -23,37 +23,157 @@ class AlfaYBeta{
     + long getTiempoExcedido()
 }
 
-class AtencionAgente{
-    - NumeroDeAgente AgentStereotypeFontColor
-    - MonitorInterface Monitor
-    + AtencionAgente(NumeroDeAgente, MonitorInterface)
+class AtencionAgente <<Runnable>>{
+    - NumeroDeAgente agente
+    - MonitorInterface monitor
+    + AtencionAgente(NumeroDeAgente agente, MonitorInterface monitor)
     + void run()
     + String toString()
 }
 
-class Cancelacion{
+class Cancelacion <<Runnable>>{
     - MonitorInterface monitor
+    + Cancelacion(MonitorInterface monitor)
+    + void run()
+    + String toString()
+}
+
+class ConfirmacionYPago <<Runnable>>{
+    - MonitorInterface monitor
+    + ConfirmacionYPago(MonitorInterface monitor)
+    + void run()
+    + String toString()
 }
 
 
-class ConfirmacionYPago{}
+class EntradaDeClientes <<Runnable>>{
+    - MonitorInterface monitor
+    + EntradaDeClientes(MonitorInterface monitor)
+    + void run()
+    + String toString()
+}
 
-class EntradaDeClientes{}
+class Log <<Runnable>>{
+    - long tiempo
+    - FileWriter file
+    - RedDePetri redDePetri
+    - PrintWriter pw
+    + Log(RedDePetri redDePetri)
+    + int contarTransiciones(String cadena, String transicion)
+    - void imprimirTransiciones()
+    + void run()
+    - void comprobarSecuencia()
+    - String detectPythonInterpreter()
+}
 
-class Log{}
+class Monitor <<MonitorInterface>>{
+    - Monitor m
+    - Semaphore mutex
+    - HashMap<Integer,Object> llaves
+    - RedDePetri redDePetri
+    + Politica politica
+    - ArrayList<AlfaYBeta> alfaYBetas
+    - String betaErrors
+    - Integer politicaAdmite
+    - Monitor(RedDePetri redDePetri, Politica politica, ArrayList<AlfaYBeta> alfaYBetas)
+    + Monitor getInstance()
+    + Monitor getInstance(RedDePetri redDePetri, Politica politica, ArrayList<AlfaYBeta> alfaYBetas)
+    - Object getLlave(int transition)
+    + String getBetaErrors()
+    + boolean fireTransition(int t)
+    - boolean politicaPermite(int t)
+    - void dormirHilo(int t) throws InterruptedException
+    - void disparar(int t)
+    - void actualizarAlfaYBeta()
+    - void notificarATodos()
+    - void despertarHilos()
+    - void notificar(int t)
+}
 
-class Monitor{}
+interface MonitorInterface{
+    {abstract} boolean fireTransition(int transicion)
+}
 
-interface MonitorInterface{}
+Enum NumeroDeAgente{
+    AGENTE1
+    AGENTE2
+    - int numnumeroDeAgente
+    + NumeroDeAgente(int numeroDeAgente)
+    + int getnumeroDeAgente()
+}
 
-class NumeroDeAgente{}
+class OurThreadFactory <<ThreadFactory>>{
+    - AtomicInteger counterThreads
+    - List<String> stats
+    + OurThreadFactory()
+    + Thread newThread(Runnable r)
+    + List<String> getStats()
+}
 
-class OutTHreadFactory{}
+interface Politica{
+    {abstract} setPolitica(int numeroDePolitica)
+    {abstract} int llamadaApolitica(int i, int j)
+}
 
-class Politica{}
+class PoliticaAgenciaVuelo <<Politica>>{
+    POLITICA_1
+    POLITICA_2
+    - int codigo
+    - String descripcion
+    -  int numeroPolitica
+    + int getCodigo()
+    + String getDescripcion()
+    + boolean isCodigoValido(int codigo)
+    + PoliticaAgenciaVuelo(int numeroPolitica)
+    + void setPolitica(int numeroPolitica)
+    + int llamadaApolitica(int i, int j)
+    - int politicaPriorizada(int i, int j)
+    - int politicaBalanceada(int i, int j)
+}
 
-class PoliticaAgenciaVuelo{}
+class RedDePetri{
+    - int[][] matrizIncidencia
+    - int[] marcado
+    - String secuencia
+    - int simT11
+    - int maxClient
+    - boolean termino
+    + RedDePetri(int[][] matrizIncidencia, int[] marcadoInicial)
+    + int[] getMarcado()
+    + boolean isTermino()
+    + int[][] getMatrizIncidencia()
+    + boolean sensibilizado(int t)
+    + int[] nuevoMarcado(int t)
+    + boolean compartenLugaresDeEntrada(int t1, int t2)
+    + List<Integer> getSensibilizadas()
+    + boolean dispararTransicion(int t)
+    + String getSecuencia()
+    - boolean comprobarTermino()
+}
 
-class RedPetri{}
+
+' Associations
+AtencionAgente --> NumeroDeAgente : agente
+AtencionAgente --> MonitorInterface : monitor
+Cancelacion --> MonitorInterface : monitor
+ConfirmacionYPago --> MonitorInterface : monitor
+EntradaDeClientes --> MonitorInterface : monitor
+Log --> RedDePetri : redDePetri
+Monitor --> RedDePetri : redDePetri
+Monitor --> Politica : politica
+Monitor ..|> MonitorInterface
+PoliticaAgenciaVuelo ..|> Politica
+Monitor o-- "1" RedDePetri : instancia
+Monitor ..> AlfaYBeta : alfaYBetas
+
+' Relaciones del main
+Main --> OurThreadFactory : crea
+Main --> RedDePetri : redDePetri
+Main --> Monitor : obtiene instancia
+Main --> AtencionAgente : crea hilos de agentes
+Main --> Cancelacion : crea hilo
+Main --> ConfirmacionYPago : crea hilo
+Main --> EntradaDeClientes : crea hilos
+Main --> Log : crea hilo
 
 @enduml
