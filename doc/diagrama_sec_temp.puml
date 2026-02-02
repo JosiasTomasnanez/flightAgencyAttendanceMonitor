@@ -13,7 +13,7 @@ participant SensibilizadoConTiempo
 ' Secuencia
 '' El hilo intenta disparar una Transicion
 activate Hilo1
-Hilo1 -> Monitor : dispararTransicion(Tn)
+Hilo1 -> Monitor : fireTransition(Tn)
 activate Monitor
 Monitor -> Mutex : acquire()
 activate Mutex
@@ -25,7 +25,7 @@ activate Monitor
 deactivate Monitor
 
 loop k==true
-    Monitor -> Red_de_petri : disparar(Tn)
+    Monitor -> Red_de_petri : dispararTransicion(Tn)
     activate Red_de_petri
     & Red_de_petri -> Red_de_petri : estaSensibilizado()
     Red_de_petri -> SensibilizadoConTiempo : getVentana(Tn)
