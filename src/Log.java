@@ -101,7 +101,7 @@ public class Log implements Runnable {
         comprobarSecuencia();
         pw.println(
             "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
-                + Monitor.getInstance().getBetaErrors());
+                + redDePetri.getBetaErrors());
         return;
       }
       int[] marcado = redDePetri.getMarcado();

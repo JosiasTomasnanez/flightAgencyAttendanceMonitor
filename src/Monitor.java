@@ -73,9 +73,6 @@ public class Monitor implements MonitorInterface {
         return llaves.get(transition);
     }
 
-    public String getBetaErrors() {
-        return betaErrors;
-    }
 
     // MÉTODO PRINCIPAL: fireTransition
     public boolean fireTransition(int t) {
@@ -110,7 +107,7 @@ public class Monitor implements MonitorInterface {
                     }
 
                     case BETA -> {
-                        betaErrors += "\nT" + t + " excedió β por " + alfaYBetas.get(t).getTiempoExcedido() + " ms";
+                        redDePetri.addBetaError("\nT" + t + " excedió β por " + alfaYBetas.get(t).getTiempoExcedido() + " ms");
                         // pero NO bloquea → continúa
                         break outer;
                     }

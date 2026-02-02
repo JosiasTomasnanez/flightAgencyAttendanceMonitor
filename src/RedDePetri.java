@@ -13,6 +13,7 @@ public class RedDePetri {
     private int maxClient; // Cantidad de clientes por atender
     private boolean termino = false; // comprobar si todos los clientes terminaron
     private Politica politica;
+    private String betaErrors = "";
 
     public RedDePetri(int[][] matrizIncidencia, int[] marcado, Politica politica, ArrayList<AlfaYBeta> alfaYbetas) {
 
@@ -22,6 +23,11 @@ public class RedDePetri {
         maxClient = this.marcado[0];
         this.alfaybetas = alfaYbetas;
 
+    }
+
+
+    public String getBetaErrors() {
+        return betaErrors;
     }
 
     public Politica getPolitica() {
@@ -142,5 +148,9 @@ public class RedDePetri {
             }
         }
         return -1;
+    }
+
+    public void addBetaError(String betaErrors) {
+       this.betaErrors += betaErrors;
     }
 }
