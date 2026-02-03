@@ -171,4 +171,19 @@ public class Monitor implements MonitorInterface {
         getCondition(t).signal();
     }
 
+    private int[] getVectorHilosEsperando() {
+        int cantidadTransiciones = redDePetri.getMatrizIncidencia()[0].length; // Cantidad de transiciones
+        // Vector que nos dice que transiciones tienen hilos esperando
+        int[] vectorEsperando = new int[cantidadTransiciones];
+        for (int t = 0; t < cantidadTransiciones; t++) {
+            Condition c = condiciones.get(t); // Obtenemos la variable de conidicion
+            if (c != null) {
+                // nos dice cuantos hilos estan esperando en una condicion
+                vectorEsperando[t] = mutex.getWaitQueueLength(c);
+            } else {
+                vectorEsperando[t] = 0;
+            }
+        }
+        return vectorEsperando;
+    }
 }
