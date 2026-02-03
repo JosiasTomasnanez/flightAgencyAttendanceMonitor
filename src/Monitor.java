@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
+//import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Clase Monitor que controla la ejecución de una red de Petri. Implementa la
@@ -9,8 +10,10 @@ import java.util.concurrent.Semaphore;
  * sincronización entre hilos.
  */
 public class Monitor implements MonitorInterface {
+    private final ReentrantLock mutex = new ReentrantLock();
     private static Monitor m; // Instancia unica del monitor
-    private static final Semaphore mutex = new Semaphore(1); // Semaforo para exclusion mutua
+    // private static final Semaphore mutex = new Semaphore(1); // Semaforo para
+    // exclusion mutua
     private final HashMap<Integer, Object> llaves = new HashMap<>(); // Mapa de llaves para sincronización
     private RedDePetri redDePetri;
     private ArrayList<AlfaYBeta> alfaYBetas;
@@ -72,16 +75,15 @@ public class Monitor implements MonitorInterface {
         return llaves.get(transition);
     }
 
-
     // MÉTODO PRINCIPAL: fireTransition
     public boolean fireTransition(int t) {
 
         if (redDePetri.isTermino()) {
             return false;
         }
+        // Se toma el mutex
+        mutex.lock();
         try {
-            // Se toma el mutex
-            mutex.acquire();
 
             outer: while (true) {
 
@@ -96,18 +98,19 @@ public class Monitor implements MonitorInterface {
                         if (faltante < 1) {
                             faltante = 1;
                         }
-                        mutex.release();
-                        synchronized (getLlave(t)) {
+
+                        mutex.unlock(); // Liberar el lock antes de esperar
+                        try {
                             getLlave(t).wait(faltante);
+                        } finally {
+                            mutex.lock(); // Re-adquirir el lock después de esperar
                         }
-                        mutex.acquire();
                         continue; // volver a verificar alfa/beta
                         // luego de esperar, vuelve a verificar alfa/beta/sensibilizado
                     }
 
                     case BETA -> {
-                        // pero NO bloquea → continúa
-                        break outer;
+                        break outer; //  NO bloquea → continúa
                     }
 
                     case OK -> {
@@ -122,7 +125,7 @@ public class Monitor implements MonitorInterface {
                     return false;
                 }
                 dormirHilo(t);
-                mutex.acquire(); // re-adquirir tras despertar
+                mutex.lock();
             }
 
             actualizarAlfaYBeta(t);
@@ -133,7 +136,7 @@ public class Monitor implements MonitorInterface {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            mutex.release();
+            mutex.unlock();
         }
         return true;
     }
@@ -141,7 +144,7 @@ public class Monitor implements MonitorInterface {
     // dormir hilo en su cola de condicion
     private void dormirHilo(int t) throws InterruptedException {
         synchronized (getLlave(t)) {
-            mutex.release();
+            mutex.unlock();
             getLlave(t).wait();
         }
     }
@@ -176,7 +179,7 @@ public class Monitor implements MonitorInterface {
 
     private void notificar(int t) {
         synchronized (getLlave(t)) {
-            getLlave(t).notifyAll();
+            getLlave(t).notify();
         }
     }
 
