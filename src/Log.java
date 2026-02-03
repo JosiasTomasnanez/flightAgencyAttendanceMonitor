@@ -99,9 +99,6 @@ public class Log implements Runnable {
                 + "\n");
         imprimirTransiciones();
         comprobarSecuencia();
-        pw.println(
-            "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
-                + redDePetri.getBetaErrors());
         return;
       }
       int[] marcado = redDePetri.getMarcado();

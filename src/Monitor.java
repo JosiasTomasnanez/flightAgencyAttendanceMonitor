@@ -14,7 +14,6 @@ public class Monitor implements MonitorInterface {
     private final HashMap<Integer, Object> llaves = new HashMap<>(); // Mapa de llaves para sincronización
     private RedDePetri redDePetri;
     private ArrayList<AlfaYBeta> alfaYBetas;
-    private String betaErrors = "";
 
     /**
      * Constructor privado de la clase Monitor.
@@ -107,7 +106,6 @@ public class Monitor implements MonitorInterface {
                     }
 
                     case BETA -> {
-                        redDePetri.addBetaError("\nT" + t + " excedió β por " + alfaYBetas.get(t).getTiempoExcedido() + " ms");
                         // pero NO bloquea → continúa
                         break outer;
                     }
