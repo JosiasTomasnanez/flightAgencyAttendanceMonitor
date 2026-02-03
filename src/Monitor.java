@@ -1,6 +1,9 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.concurrent.Semaphore;
+//import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
 
 /**
  * Clase Monitor que controla la ejecución de una red de Petri. Implementa la
@@ -9,12 +12,15 @@ import java.util.concurrent.Semaphore;
  * sincronización entre hilos.
  */
 public class Monitor implements MonitorInterface {
+    private final ReentrantLock mutex = new ReentrantLock();
     private static Monitor m; // Instancia unica del monitor
-    private static final Semaphore mutex = new Semaphore(1); // Semaforo para exclusion mutua
-    private final HashMap<Integer, Object> llaves = new HashMap<>(); // Mapa de llaves para sincronización
+    // private static final Semaphore mutex = new Semaphore(1); // Semaforo para
+    // exclusion mutua
+    private final HashMap<Integer, Condition> condiciones = new HashMap<>(); // Mapa de llaves para sincronización
+    // private final HashMap<Integer, Object> llaves = new HashMap<>(); // Mapa de
+    // llaves para sincronización
     private RedDePetri redDePetri;
     private ArrayList<AlfaYBeta> alfaYBetas;
-    private String betaErrors = "";
 
     /**
      * Constructor privado de la clase Monitor.
@@ -65,14 +71,14 @@ public class Monitor implements MonitorInterface {
      * @param transition Identificador de la transición.
      * @return Objeto llave asociada a la transición.
      */
-    private Object getLlave(int transition) { // automatiza la creacion de llaves (una para cada transicion) también se
+    private Condition getCondition(int transition) { // automatiza la creacion de llaves (una para cada transicion)
+                                                     // también se
         // usa para obtener llave específica
-        if (!llaves.containsKey(transition)) {
-            llaves.put(transition, new Object());
+        if (!condiciones.containsKey(transition)) {
+            condiciones.put(transition, mutex.newCondition());
         }
-        return llaves.get(transition);
+        return condiciones.get(transition);
     }
-
 
     // MÉTODO PRINCIPAL: fireTransition
     public boolean fireTransition(int t) {
@@ -80,9 +86,9 @@ public class Monitor implements MonitorInterface {
         if (redDePetri.isTermino()) {
             return false;
         }
+        // Se toma el mutex
+        mutex.lock();
         try {
-            // Se toma el mutex
-            mutex.acquire();
 
             outer: while (true) {
 
@@ -97,19 +103,15 @@ public class Monitor implements MonitorInterface {
                         if (faltante < 1) {
                             faltante = 1;
                         }
-                        mutex.release();
-                        synchronized (getLlave(t)) {
-                            getLlave(t).wait(faltante);
-                        }
-                        mutex.acquire();
+
+                        getCondition(t).await(faltante, TimeUnit.MILLISECONDS);
+
                         continue; // volver a verificar alfa/beta
                         // luego de esperar, vuelve a verificar alfa/beta/sensibilizado
                     }
 
                     case BETA -> {
-                        redDePetri.addBetaError("\nT" + t + " excedió β por " + alfaYBetas.get(t).getTiempoExcedido() + " ms");
-                        // pero NO bloquea → continúa
-                        break outer;
+                        break outer; // NO bloquea → continúa
                     }
 
                     case OK -> {
@@ -123,8 +125,7 @@ public class Monitor implements MonitorInterface {
                     notificarATodos();
                     return false;
                 }
-                dormirHilo(t);
-                mutex.acquire(); // re-adquirir tras despertar
+                getCondition(t).await();
             }
 
             actualizarAlfaYBeta(t);
@@ -135,17 +136,9 @@ public class Monitor implements MonitorInterface {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         } finally {
-            mutex.release();
+            mutex.unlock();
         }
         return true;
-    }
-
-    // dormir hilo en su cola de condicion
-    private void dormirHilo(int t) throws InterruptedException {
-        synchronized (getLlave(t)) {
-            mutex.release();
-            getLlave(t).wait();
-        }
     }
 
     private void actualizarAlfaYBeta(int transicionDisparada) {
@@ -157,10 +150,8 @@ public class Monitor implements MonitorInterface {
     }
 
     private void notificarATodos() {
-        for (Object o : llaves.values()) {
-            synchronized (o) {
-                o.notifyAll();
-            }
+        for (Condition c : condiciones.values()) {
+            c.signalAll();
         }
     }
 
@@ -177,9 +168,22 @@ public class Monitor implements MonitorInterface {
     }
 
     private void notificar(int t) {
-        synchronized (getLlave(t)) {
-            getLlave(t).notifyAll();
-        }
+        getCondition(t).signal();
     }
 
+    private int[] getVectorHilosEsperando() {
+        int cantidadTransiciones = redDePetri.getMatrizIncidencia()[0].length; // Cantidad de transiciones
+        // Vector que nos dice que transiciones tienen hilos esperando
+        int[] vectorEsperando = new int[cantidadTransiciones];
+        for (int t = 0; t < cantidadTransiciones; t++) {
+            Condition c = condiciones.get(t); // Obtenemos la variable de conidicion
+            if (c != null) {
+                // nos dice cuantos hilos estan esperando en una condicion
+                vectorEsperando[t] = mutex.getWaitQueueLength(c);
+            } else {
+                vectorEsperando[t] = 0;
+            }
+        }
+        return vectorEsperando;
+    }
 }
