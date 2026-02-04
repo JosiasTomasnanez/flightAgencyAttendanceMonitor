@@ -56,9 +56,6 @@ public class ConfirmacionYPago implements Runnable {
       if (!monitor.fireTransition(10)) {
         return; // Disparo de T10
       }
-      if (!monitor.fireTransition(11)) {
-        return; // Disparo de T11
-      }
     }
   }
 

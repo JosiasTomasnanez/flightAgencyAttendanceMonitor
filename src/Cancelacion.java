@@ -45,9 +45,6 @@ public class Cancelacion implements Runnable {
       if (!monitor.fireTransition(8)) {
         return;
       }
-      if (!monitor.fireTransition(11)) {
-        return;
-      }
     }
   }
 

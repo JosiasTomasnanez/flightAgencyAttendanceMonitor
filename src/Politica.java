@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Interfaz que define el comportamiento de una política para decidir entre
  * transiciones en un
@@ -30,5 +32,5 @@ public interface Politica {
    * @return el código de la transición seleccionada según los criterios de la
    *         política.
    */
-  int llamadaApolitica(int i, int j);
+  int llamadaApolitica(List<Integer> conflicto);
 }

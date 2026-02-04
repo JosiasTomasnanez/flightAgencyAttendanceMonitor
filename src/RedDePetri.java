@@ -13,6 +13,8 @@ public class RedDePetri {
     private int maxClient; // Cantidad de clientes por atender
     private boolean termino = false; // comprobar si todos los clientes terminaron
     private Politica politica;
+    private int tockensT11=0;
+    private int auxT11=0;
 
     public RedDePetri(int[][] matrizIncidencia, int[] marcado, Politica politica, ArrayList<AlfaYBeta> alfaYbetas) {
 
@@ -53,67 +55,67 @@ public class RedDePetri {
         return true;
     }
 
-    // Realiza el calculo del nuevo marcado en funcion de la ecuacion fundamental
-    private int[] nuevoMarcado(int t) {
-        int[] S = new int[matrizIncidencia[0].length];
-        S[t] = 1;
-
-        int[] result = new int[matrizIncidencia.length];
-
-        for (int i = 0; i < matrizIncidencia.length; i++) {
-            int suma = 0;
-            for (int j = 0; j < matrizIncidencia[0].length; j++) {
-                suma += matrizIncidencia[i][j] * S[j];
-            }
-            result[i] = marcado[i] + suma;
-        }
-
-        return result;
+    // Realiza el calculo del nuevo marcado en funcion de la ecuacion fundamental, con una sola transicion.
+   private int[] nuevoMarcado(int t) {
+    int[] result = new int[matrizIncidencia.length];
+    for (int i = 0; i < matrizIncidencia.length; i++) {
+        result[i] = marcado[i] + matrizIncidencia[i][t]; // usar solo la columna t debido a que es una unica transicion a la vez
     }
+    return result;
+}
 
-    public boolean compartenLugaresDeEntrada(int t1, int t2) {
-        for (int[] fila : matrizIncidencia) {
-            if (fila[t1] < 0 && fila[t2] < 0)
-                return true;
-        }
-        return false;
-    }
 
     // Vector de sensibilizado estructural
-    public List<Integer> getSensibilizadas() {
-        List<Integer> sensibilizadas = new ArrayList<>();
-        for (int t = 0; t < matrizIncidencia[0].length; t++) {
-            if (sensibilizado(t)) {
-                sensibilizadas.add(t);
-            }
+   public int[] getSensibilizadas() {
+    int[] temp = new int[matrizIncidencia[0].length];
+    int count = 0;
+    for (int t = 0; t < matrizIncidencia[0].length; t++) {
+        if (sensibilizado(t)) {
+            temp[count++] = t;
         }
-        // System.out.println("Transiciones sensibilizadas: " + sensibilizadas);
-        return sensibilizadas;
     }
+    int[] sensibilizadas = new int[count];
+    System.arraycopy(temp, 0, sensibilizadas, 0, count);
+    return sensibilizadas;
+}
+
 
     public boolean dispararTransicion(int t) {
-        // Simulación T11 especial
-        if (t == 11) {
-            simT11++;
-            secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1
-            PantallaCarga.incrementarPorcentaje(simT11, maxClient);
-
-            if (simT11 == maxClient || comprobarTermino()) {
-                termino = true;
-                PantallaCarga.cerrar();
-                return false;
-            }
-            return true;
+    // Verificar si la transición está sensibilizada
+    if (!sensibilizado(t)) {
+        return false;
+    }
+    if (t == 11) { // Simulación T11 especial
+        // Calculamos cuántos tokens nuevos hay en la plaza 14 desde la última observación
+        int diferencia = marcado[14] - auxT11;
+        if (diferencia > 0) {
+            tockensT11 += diferencia;
+            auxT11 = marcado[14]; // actualizamos la referencia
         }
-        // Verificar si la transición está sensibilizada
-        if (!sensibilizado(t)) {
+        // Si no hay tokens ficticios, no podemos "disparar"
+        if (tockensT11 < 1) {
             return false;
         }
-        secuencia += "T" + t; // Asumiendo que las transiciones se numeran desde T1
-        marcado = nuevoMarcado(t);
-
+        // Disparamos T11 de manera simulada
+        tockensT11--;
+        simT11++;
+        secuencia += "T" + t; // registrar la transición
+        // Actualizar pantalla
+        PantallaCarga.incrementarPorcentaje(simT11, maxClient);
+        // Comprobar si terminamos
+        if (simT11 == maxClient || comprobarTermino()) {
+            termino = true;
+            PantallaCarga.cerrar();
+            return false;
+        }
         return true;
     }
+    // Transiciones normales
+    secuencia += "T" + t; // registrar la transición
+    marcado = nuevoMarcado(t);
+    return true;
+}
+
 
     public String getSecuencia() {
         return secuencia;
@@ -127,21 +129,31 @@ public class RedDePetri {
         return true;
     }
 
-    public int verificarConflicto() {
+    public int consultarPolitica(List<Integer> candidatos) {
+        //si no hay conflicto o no hay hilos candidatos, se manda -1 para que compitan por el mutex
+        if (candidatos.isEmpty() || !compartenLugaresDeEntrada(candidatos))  return -1; // No hay candidatos activos
 
-        List<Integer> S = getSensibilizadas();
-        for (int i = 0; i < S.size(); i++) {
-            for (int j = i + 1; j < S.size(); j++) {
-
-                int t1 = S.get(i);
-                int t2 = S.get(j);
-
-                if (compartenLugaresDeEntrada(t1, t2)) {
-                    return getPolitica().llamadaApolitica(t1, t2);
-                }
-            }
-        }
-        return -1;
+        return politica.llamadaApolitica(candidatos);
     }
+
+private boolean compartenLugaresDeEntrada(List<Integer> candidatos) {
+    for (int i = 0; i < candidatos.size(); i++) {
+        for (int j = i + 1; j < candidatos.size(); j++) {
+            if (compartenLugares(candidatos.get(i), candidatos.get(j))) return true;
+        }
+    }
+    return false;
+}
+
+/**
+ * Verifica si dos transiciones comparten al menos un lugar de entrada.
+ */
+private boolean compartenLugares(int t1, int t2) {
+    for (int i = 0; i < matrizIncidencia.length; i++) {
+        if (matrizIncidencia[i][t1] < 0 && matrizIncidencia[i][t2] < 0) return true;
+    }
+    return false;
+}
+
 
 }

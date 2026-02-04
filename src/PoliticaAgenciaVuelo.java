@@ -1,3 +1,5 @@
+import java.util.List;
+
 /**
  * Clase que implementa la interfaz {@link Politica} para manejar la selección
  * de transiciones en un
@@ -5,82 +7,36 @@
  */
 public class PoliticaAgenciaVuelo implements Politica {
 
-  /**
-   * Enumeración que define las políticas disponibles junto con su código y
-   * descripción.
-   */
-  private enum Politicas {
-    POLITICA_1(1, "Politica balanceada"),
-    POLITICA_2(2, "Politica priorizada");
+    private int numeroPolitica; // Política elegida
 
-    private final int codigo;
-
-    /**
-     * Constructor para inicializar los valores de la enumeración.
-     *
-     * @param codigo      el código asociado a la política.
-     * @param descripcion la descripción de la política.
-     */
-    Politicas(int codigo, String descripcion) {
-      this.codigo = codigo;
+    public PoliticaAgenciaVuelo(int numeroPolitica) throws PoliticaInexistenteException {
+        setPolitica(numeroPolitica);
     }
 
-    /**
-     * Obtiene el código de la política.
-     *
-     * @return el código de la política.
-     */
-    public int getCodigo() {
-      return codigo;
-    }
-
-    /**
-     * Verifica si un código corresponde a una política válida.
-     *
-     * @param codigo el código a verificar.
-     * @return true si el código es válido; false en caso contrario.
-     */
-    public static boolean isCodigoValido(int codigo) {
-      for (Politicas politica : values()) {
-        if (politica.getCodigo() == codigo) {
-          return true;
+    @Override
+    public void setPolitica(int numeroPolitica) throws PoliticaInexistenteException {
+        if (numeroPolitica < 1 || numeroPolitica > 2) {
+            throw new PoliticaInexistenteException();
         }
-      }
-      return false;
+        this.numeroPolitica = numeroPolitica;
     }
-  }
 
-  private int numeroPolitica; // numero identificador de la politica a usar
-
-  /**
-   * Constructor de la clase que inicializa los contadores y establece la
-   * política.
-   *
-   * @param numeroPolitica el código de la política a aplicar.
-   * @throws PoliticaInexistenteException si el código de la política es inválido.
-   */
-  public PoliticaAgenciaVuelo(int numeroPolitica) throws PoliticaInexistenteException {
-    setPolitica(numeroPolitica);
-  }
 
   @Override
-  public void setPolitica(int numeroPolitica) throws PoliticaInexistenteException {
-    if (Politicas.isCodigoValido(numeroPolitica)) {
-      this.numeroPolitica = numeroPolitica;
-    } else {
-      throw new PoliticaInexistenteException();
+  public int llamadaApolitica(List<Integer> candidatos) {
+    if(numeroPolitica==1){
+      if(candidatos.contains(2) && candidatos.contains(3))
+        return politicaBalanceada(2, 3);
+      else return politicaBalanceada(6, 7);
     }
-  }
 
-  @Override
-  public int llamadaApolitica(int i, int j) {
-    if (numeroPolitica == Politicas.POLITICA_1.getCodigo()) {
-      return politicaBalanceada(i, j);
-    } else if (numeroPolitica == Politicas.POLITICA_2.getCodigo()) {
-      return politicaPriorizada(i, j);
-    } else {
-      throw new IllegalStateException("Política no definida o inválida.");
+    if(numeroPolitica==2){
+      if(candidatos.contains(2) && candidatos.contains(3))
+        return politicaPriorizada(2, 3);
+      else return politicaPriorizada(6,7);
     }
+
+    return -1;
   }
 
   /**
@@ -92,10 +48,10 @@ public class PoliticaAgenciaVuelo implements Politica {
    */
   private int politicaPriorizada(int i, int j) {
     if ((i == 2 && j == 3) || (i == 3 && j == 2)) {
-      int resultado = Math.random() <= 0.75 ? 2 : 3;
+      int resultado = Math.random() <= 0.75 ? i : j;
       return resultado;
     } else {
-      int resultado = Math.random() <= 0.8 ? 6 : 7;
+      int resultado = Math.random() <= 0.8 ? i : j;
       return resultado;
     }
   }
