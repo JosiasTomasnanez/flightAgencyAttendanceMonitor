@@ -24,7 +24,7 @@ public class ConfiguracionInicial {
         marcado = new int[] { 186, 1, 0, 0, 5, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0 };
 
         matrizIncidencia = new int[][] {
-                { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },// modificado para que t11 no ponga token de vuelta en p0
+                { -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, // modificado para que t11 no ponga token de vuelta en p0
                 { -1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
                 { 0, 1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0 },

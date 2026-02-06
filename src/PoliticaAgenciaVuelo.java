@@ -7,33 +7,34 @@ import java.util.List;
  */
 public class PoliticaAgenciaVuelo implements Politica {
 
-    private int numeroPolitica; // Política elegida
+  private int numeroPolitica; // Política elegida
 
-    public PoliticaAgenciaVuelo(int numeroPolitica) throws PoliticaInexistenteException {
-        setPolitica(numeroPolitica);
+  public PoliticaAgenciaVuelo(int numeroPolitica) throws PoliticaInexistenteException {
+    setPolitica(numeroPolitica);
+  }
+
+  @Override
+  public void setPolitica(int numeroPolitica) throws PoliticaInexistenteException {
+    if (numeroPolitica < 1 || numeroPolitica > 2) {
+      throw new PoliticaInexistenteException();
     }
-
-    @Override
-    public void setPolitica(int numeroPolitica) throws PoliticaInexistenteException {
-        if (numeroPolitica < 1 || numeroPolitica > 2) {
-            throw new PoliticaInexistenteException();
-        }
-        this.numeroPolitica = numeroPolitica;
-    }
-
+    this.numeroPolitica = numeroPolitica;
+  }
 
   @Override
   public int llamadaApolitica(List<Integer> candidatos) {
     switch (numeroPolitica) {
       case 1:
-        if(candidatos.contains(2) && candidatos.contains(3))
-            return politicaBalanceada(2, 3);
+        if (candidatos.contains(2) && candidatos.contains(3))
+          return politicaBalanceada(2, 3);
         return politicaBalanceada(6, 7);
 
-      default:
-        if(candidatos.contains(2) && candidatos.contains(3))
+      case 2:
+        if (candidatos.contains(2) && candidatos.contains(3))
           return politicaPriorizada(2, 3);
-        return politicaPriorizada(6,7);
+        return politicaPriorizada(6, 7);
+      default:
+        return -1;
     }
   }
 

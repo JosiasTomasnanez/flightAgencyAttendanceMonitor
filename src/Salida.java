@@ -1,8 +1,8 @@
-public class Salida implements Runnable{
+public class Salida implements Runnable {
     private final MonitorInterface monitor;
 
-    public Salida(MonitorInterface monitor){
-        this.monitor=monitor;
+    public Salida(MonitorInterface monitor) {
+        this.monitor = monitor;
     }
 
     @Override
@@ -18,5 +18,5 @@ public class Salida implements Runnable{
             }
         }
     }
-    
+
 }

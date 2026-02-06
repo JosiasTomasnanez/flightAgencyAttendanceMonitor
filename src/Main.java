@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+
 /**
  * Clase principal que gestiona la ejecución del programa de la agencia de
  * vuelos. Esta clase se encarga de la interacción con el usuario,
@@ -51,11 +52,10 @@ public class Main {
       hilos.add(factory.newThread(new ConfirmacionYPago(Monitor.getInstance())));
     }
 
-     // 1 Hilo encargado de la confirmacion y pago
+    // 1 Hilo encargado de la confirmacion y pago
     for (int i = 0; i < CANTIDAD_HILOS_SALIDA; i++) {
       hilos.add(factory.newThread(new Salida(Monitor.getInstance())));
     }
-    
 
     // Hilo encargado del Log
     hilos.add(factory.newThread(new Log(configuracionInicial.getRedDePetri())));

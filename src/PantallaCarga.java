@@ -14,6 +14,7 @@ public class PantallaCarga extends JFrame {
   private static JPanel panel; // Panel donde se dibuja la barra de progreso.
   private static int porcentaje = 0; // Porcentaje de avance de la carga.
   private static int clientesSalientes = 0;
+
   /**
    * Constructor que configura la ventana de la pantalla de carga. Inicializa la
    * ventana con un

@@ -118,9 +118,17 @@ public class Monitor implements MonitorInterface {
                 }
             }
 
+            // Si es la transicion que llamo la politica (!true = false), y no esta
+            // sencibilizada (!false = True), se duerme
+            // Si no es la transicion que llamo la politica (!false = true), y no esta
+            // sencibilizada (!false = True), se duerme
+            // Si no es la transicion que llamo la politica (!false = true), y esta
+            // sencibilizada (!true = false), se duerme
+            // Si es la transicion que llamo la politica (!true = false), y esta
+            // sencibilizada (!true = false), no entra al while y despierta hilos
             while (!politicaAdmite(t) || !redDePetri.dispararTransicion(t)) {
-                
-                    if (redDePetri.isTermino()) {
+
+                if (redDePetri.isTermino()) {
                     notificarATodos();
                     transicionAdespertar = -1;
                     return false;
@@ -149,8 +157,7 @@ public class Monitor implements MonitorInterface {
         }
     }
 
-
-    private boolean politicaAdmite(int t){
+    private boolean politicaAdmite(int t) {
         return transicionAdespertar == -1 || transicionAdespertar == t;
     }
 
@@ -162,21 +169,24 @@ public class Monitor implements MonitorInterface {
 
     // despertar hilos según política
     private void despertarHilos() {
-        //"and" entre cola de condicion y sensibilizadas
+        // "and" entre cola de condicion y sensibilizadas
         List<Integer> candidatos = new ArrayList<>();
         int[] Vs = redDePetri.getSensibilizadas();
-        int[] Vc = getHilosEnColas(); 
+        int[] Vc = getHilosEnColas();
 
-        for (int t=0 ; t < redDePetri.getCantidadDeTransiciones() ; t++ ) {
-            if (Vs[t] > 0  && Vc[t] > 0) candidatos.add(t);
+        for (int t = 0; t < redDePetri.getCantidadDeTransiciones(); t++) {
+            if (Vs[t] > 0 && Vc[t] > 0)
+                candidatos.add(t);
         }
 
-        //Le pido a la red de petri que consulte por su politica
+        // Le pido a la red de petri que consulte por su politica
         transicionAdespertar = redDePetri.consultarPolitica(candidatos);
         if (transicionAdespertar >= 0) {
             notificar(transicionAdespertar);
             return;
         }
+        // Se notifica a uno por cada lugar que tiene a un subrpoceso y su condicion se
+        // cumple
         for (int t : candidatos) {
             notificar(t);
         }
