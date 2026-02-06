@@ -17,7 +17,7 @@ public class Monitor implements MonitorInterface {
     private final HashMap<Integer, Condition> condiciones = new HashMap<>(); // Mapa de llaves para sincronización
     private RedDePetri redDePetri;
     private ArrayList<AlfaYBeta> alfaYBetas;
-    private int hiloPermitidoPorPolitica = -1; // -1 , se permiten todos
+    private int transicionAdespertar; // -1 , se permiten todos
 
     /**
      * Constructor privado de la clase Monitor.
@@ -30,6 +30,7 @@ public class Monitor implements MonitorInterface {
         }
         this.redDePetri = redDePetri;
         this.alfaYBetas = redDePetri.getAlfayBeta();
+        transicionAdespertar = -1;
 
     }
 
@@ -117,10 +118,11 @@ public class Monitor implements MonitorInterface {
                 }
             }
 
-            while (!redDePetri.dispararTransicion(t) && !politicaAdmite(t)) {
+            while (!politicaAdmite(t) || !redDePetri.dispararTransicion(t)) {
                 
                     if (redDePetri.isTermino()) {
                     notificarATodos();
+                    transicionAdespertar = -1;
                     return false;
                 }
                 getCondition(t).await();
@@ -149,7 +151,7 @@ public class Monitor implements MonitorInterface {
 
 
     private boolean politicaAdmite(int t){
-        return hiloPermitidoPorPolitica == -1 || hiloPermitidoPorPolitica == t;
+        return transicionAdespertar == -1 || transicionAdespertar == t;
     }
 
     private void notificarATodos() {
@@ -161,33 +163,31 @@ public class Monitor implements MonitorInterface {
     // despertar hilos según política
     private void despertarHilos() {
         //"and" entre cola de condicion y sensibilizadas
-         List<Integer> candidatos = new ArrayList<>();
-        for (int t : redDePetri.getSensibilizadas()) {
-            if (getHilosEnColas()[t] > 0) candidatos.add(t);
+        List<Integer> candidatos = new ArrayList<>();
+        int[] Vs = redDePetri.getSensibilizadas();
+        int[] Vc = getHilosEnColas(); 
+
+        for (int t=0 ; t < redDePetri.getCantidadDeTransiciones() ; t++ ) {
+            if (Vs[t] > 0  && Vc[t] > 0) candidatos.add(t);
         }
 
         //Le pido a la red de petri que consulte por su politica
-        int transicionAdespertar = redDePetri.consultarPolitica(candidatos);
+        transicionAdespertar = redDePetri.consultarPolitica(candidatos);
         if (transicionAdespertar >= 0) {
             notificar(transicionAdespertar);
-            hiloPermitidoPorPolitica = transicionAdespertar;
             return;
         }
-        hiloPermitidoPorPolitica = -1;
-        for (int t : redDePetri.getSensibilizadas()) {
+        for (int t : candidatos) {
             notificar(t);
         }
     }
 
     private void notificar(int t) {
-        Condition c = condiciones.get(t);
-        if (c != null && mutex.getWaitQueueLength(c) > 0) {
-            c.signal();
-        }
+        condiciones.get(t).signal();
     }
 
     private int[] getHilosEnColas() {
-        int cantidadTransiciones = redDePetri.getMatrizIncidencia()[0].length; // Cantidad de transiciones
+        int cantidadTransiciones = redDePetri.getCantidadDeTransiciones(); // Cantidad de transiciones
         // Vector que nos dice que transiciones tienen hilos esperando
         int[] vectorEsperando = new int[cantidadTransiciones];
         for (int t = 0; t < cantidadTransiciones; t++) {

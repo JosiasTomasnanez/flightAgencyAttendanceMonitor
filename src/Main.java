@@ -12,7 +12,7 @@ public class Main {
   public static final int CANTIDAD_HILOS_CANCELACION = 1;
   public static final int CANTIDAD_HILOS_CONFIRMACION = 1;
   public static final int CANTIDAD_HILOS_GEN_CLIENTES = 5;
-  public static final int CANTIDAD_HILOS_SIMULACION_T11 = 5;
+  public static final int CANTIDAD_HILOS_SALIDA = 5;
 
   public static void main(String[] args) {
 
@@ -52,8 +52,8 @@ public class Main {
     }
 
      // 1 Hilo encargado de la confirmacion y pago
-    for (int i = 0; i < CANTIDAD_HILOS_SIMULACION_T11; i++) {
-      hilos.add(factory.newThread(new SimulacionT11(Monitor.getInstance())));
+    for (int i = 0; i < CANTIDAD_HILOS_SALIDA; i++) {
+      hilos.add(factory.newThread(new Salida(Monitor.getInstance())));
     }
     
 

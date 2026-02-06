@@ -9,12 +9,10 @@ public class RedDePetri {
     private int[][] matrizIncidencia;
     // simula la transicion 11, llevando registro, pero sin cambiar de estado (Se
     // pueden borrar si se cambia de red)
-    private int simT11 = 0; // numero de transiciones T11 disparadas
     private int maxClient; // Cantidad de clientes por atender
     private boolean termino = false; // comprobar si todos los clientes terminaron
     private Politica politica;
-    private int tockensT11=0;
-    private int auxT11=0;
+    private int clientesSalientes =0;
 
     public RedDePetri(int[][] matrizIncidencia, int[] marcado, Politica politica, ArrayList<AlfaYBeta> alfaYbetas) {
 
@@ -26,6 +24,9 @@ public class RedDePetri {
 
     }
 
+    public int getClientesSalientes(){
+        return clientesSalientes;
+    }
     public Politica getPolitica() {
         return politica;
     }
@@ -55,66 +56,58 @@ public class RedDePetri {
         return true;
     }
 
-    // Realiza el calculo del nuevo marcado en funcion de la ecuacion fundamental, con una sola transicion.
-   private int[] nuevoMarcado(int t) {
-    int[] result = new int[matrizIncidencia.length];
-    for (int i = 0; i < matrizIncidencia.length; i++) {
-        result[i] = marcado[i] + matrizIncidencia[i][t]; // usar solo la columna t debido a que es una unica transicion a la vez
-    }
-    return result;
-}
+    private int[] nuevoMarcado(int t) {
+        int[] S = new int[matrizIncidencia[0].length];
+        S[t] = 1;
 
+        int[] result = new int[matrizIncidencia.length];
 
-    // Vector de sensibilizado estructural
-   public int[] getSensibilizadas() {
-    int[] temp = new int[matrizIncidencia[0].length];
-    int count = 0;
-    for (int t = 0; t < matrizIncidencia[0].length; t++) {
-        if (sensibilizado(t)) {
-            temp[count++] = t;
+        for (int i = 0; i < matrizIncidencia.length; i++) {
+            int suma = 0;
+            for (int j = 0; j < matrizIncidencia[0].length; j++) {
+                suma += matrizIncidencia[i][j] * S[j];
+            }
+            result[i] = marcado[i] + suma;
         }
+
+        return result;
     }
-    int[] sensibilizadas = new int[count];
-    System.arraycopy(temp, 0, sensibilizadas, 0, count);
-    return sensibilizadas;
-}
+
+
+  // Vector de sensibilizado estructural (0 = no sensibilizada, 1 = sensibilizada)
+    public int[] getSensibilizadas() {
+        int[] sensibilizadas = new int[matrizIncidencia[0].length];
+
+        for (int t = 0; t < matrizIncidencia[0].length; t++)
+            sensibilizadas[t] = sensibilizado(t) ? 1 : 0;
+        
+        return sensibilizadas;
+    }
+
+    public int getCantidadDeTransiciones(){
+        return matrizIncidencia[0].length;
+    }
 
 
     public boolean dispararTransicion(int t) {
     // Verificar si la transición está sensibilizada
-    if (!sensibilizado(t)) {
-        return false;
-    }
+    if (!sensibilizado(t)) return false;
+    
     if (t == 11) { // Simulación T11 especial
-        // Calculamos cuántos tokens nuevos hay en la plaza 14 desde la última observación
-        int diferencia = marcado[14] - auxT11;
-        if (diferencia > 0) {
-            tockensT11 += diferencia;
-            auxT11 = marcado[14]; // actualizamos la referencia
-        }
-        // Si no hay tokens ficticios, no podemos "disparar"
-        if (tockensT11 < 1) {
-            return false;
-        }
-        // Disparamos T11 de manera simulada
-        tockensT11--;
-        simT11++;
-        secuencia += "T" + t; // registrar la transición
-        // Actualizar pantalla
-        PantallaCarga.incrementarPorcentaje(simT11, maxClient);
-        // Comprobar si terminamos
-        if (simT11 == maxClient || comprobarTermino()) {
-            termino = true;
-            PantallaCarga.cerrar();
-            return false;
-        }
-        return true;
+        clientesSalientes++;
+        PantallaCarga.incrementarPorcentaje(maxClient);
     }
     // Transiciones normales
     secuencia += "T" + t; // registrar la transición
     marcado = nuevoMarcado(t);
+    // Comprobar si terminamos
+    if (comprobarTermino()) {
+        termino = true;
+        PantallaCarga.cerrar();
+        return false;
+    }
     return true;
-}
+    }
 
 
     public String getSecuencia() {

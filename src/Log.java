@@ -95,7 +95,7 @@ public class Log implements Runnable {
                 + contarTransiciones(redDePetri.getSecuencia(), "T7")
                 + "\n"
                 + "clientes que salieron en total: "
-                + redDePetri.getMarcado()[14]
+                + redDePetri.getClientesSalientes()
                 + "\n");
         imprimirTransiciones();
         comprobarSecuencia();
@@ -131,7 +131,7 @@ public class Log implements Runnable {
               + marcado[12]
               + "\n"
               + "Clientes saliente: "
-              + marcado[14]
+              + redDePetri.getClientesSalientes()
               + "\n");
       try {
         Thread.sleep(250); // Duracion del proceso

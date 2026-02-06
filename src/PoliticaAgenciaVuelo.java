@@ -24,19 +24,17 @@ public class PoliticaAgenciaVuelo implements Politica {
 
   @Override
   public int llamadaApolitica(List<Integer> candidatos) {
-    if(numeroPolitica==1){
-      if(candidatos.contains(2) && candidatos.contains(3))
-        return politicaBalanceada(2, 3);
-      else return politicaBalanceada(6, 7);
-    }
+    switch (numeroPolitica) {
+      case 1:
+        if(candidatos.contains(2) && candidatos.contains(3))
+            return politicaBalanceada(2, 3);
+        return politicaBalanceada(6, 7);
 
-    if(numeroPolitica==2){
-      if(candidatos.contains(2) && candidatos.contains(3))
-        return politicaPriorizada(2, 3);
-      else return politicaPriorizada(6,7);
+      default:
+        if(candidatos.contains(2) && candidatos.contains(3))
+          return politicaPriorizada(2, 3);
+        return politicaPriorizada(6,7);
     }
-
-    return -1;
   }
 
   /**

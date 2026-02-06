@@ -13,7 +13,7 @@ import javax.swing.*;
 public class PantallaCarga extends JFrame {
   private static JPanel panel; // Panel donde se dibuja la barra de progreso.
   private static int porcentaje = 0; // Porcentaje de avance de la carga.
-
+  private static int clientesSalientes = 0;
   /**
    * Constructor que configura la ventana de la pantalla de carga. Inicializa la
    * ventana con un
@@ -52,7 +52,8 @@ public class PantallaCarga extends JFrame {
    * @param clientesSalientes Número de clientes que han salido
    * @param clientesMax       Número total de clientes
    */
-  public static void incrementarPorcentaje(int clientesSalientes, int clientesMax) {
+  public static void incrementarPorcentaje(int clientesMax) {
+    clientesSalientes++;
     int nuevoPorcentaje = (clientesSalientes * 100) / clientesMax;
     if (nuevoPorcentaje > porcentaje) {
       porcentaje = nuevoPorcentaje;
