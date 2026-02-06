@@ -88,36 +88,6 @@ public class Monitor implements MonitorInterface {
         mutex.lock();
         try {
 
-            outer: while (true) {
-
-                // Se verifica si es una transicion temporal
-                switch (alfaYBetas.get(t).verificar()) {
-
-                    case ALFA -> {
-                        long inicio = alfaYBetas.get(t).getInicio();
-                        long transcurrido = System.currentTimeMillis() - inicio;
-                        long faltante = alfaYBetas.get(t).getAlfa() - transcurrido;
-
-                        if (faltante < 1) {
-                            faltante = 1;
-                        }
-
-                        getCondition(t).await(faltante, TimeUnit.MILLISECONDS);
-
-                        continue; // volver a verificar alfa/beta
-                        // luego de esperar, vuelve a verificar alfa/beta/sensibilizado
-                    }
-
-                    case BETA -> {
-                        break outer; // NO bloquea → continúa
-                    }
-
-                    case OK -> {
-                        break outer; // sale del while
-                    }
-                }
-            }
-
             // Si es la transicion que llamo la politica (!true = false), y no esta
             // sencibilizada (!false = True), se duerme
             // Si no es la transicion que llamo la politica (!false = true), y no esta
@@ -126,7 +96,7 @@ public class Monitor implements MonitorInterface {
             // sencibilizada (!true = false), se duerme
             // Si es la transicion que llamo la politica (!true = false), y esta
             // sencibilizada (!true = false), no entra al while y despierta hilos
-            while (!politicaAdmite(t) || !redDePetri.dispararTransicion(t)) {
+            while (!Comprobar_condiciones(t) || !politicaAdmite(t) || !redDePetri.dispararTransicion(t)) {
 
                 if (redDePetri.isTermino()) {
                     notificarATodos();
@@ -147,6 +117,30 @@ public class Monitor implements MonitorInterface {
             mutex.unlock();
         }
         return true;
+    }
+
+    private boolean Comprobar_condiciones(int transicion) throws InterruptedException{
+        // Se corrobora que este sensibilizada primero
+        if (!redDePetri.sensibilizado(transicion)) {
+            // Si no esta sensibilizado, no se sigue ejecutando
+            return false;
+        }
+        switch (alfaYBetas.get(transicion).verificar()) {
+            case ALFA -> {
+                long inicio = alfaYBetas.get(transicion).getInicio();
+                long transcurrido = System.currentTimeMillis() - inicio;
+                long faltante = alfaYBetas.get(transicion).getAlfa() - transcurrido;
+
+                if (faltante > 0) {
+                    getCondition(transicion).await(faltante, TimeUnit.MILLISECONDS);
+                }
+                return false; // Después de dormir, vuelve a verificar
+            }
+            case BETA, OK -> {
+                return true; // Si está en estado BETA o OK, los tiempos se cumplen
+            }
+        }
+        return false;
     }
 
     private void actualizarAlfaYBeta(int transicionDisparada) {
