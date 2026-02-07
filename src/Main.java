@@ -1,5 +1,14 @@
 import java.util.ArrayList;
 
+import monitor.Monitor;
+import pantalla.PantallaCarga;
+import procesos.AtencionAgente;
+import procesos.Cancelacion;
+import procesos.ConfirmacionYPago;
+import procesos.EntradaDeClientes;
+import procesos.NumeroDeAgente;
+import procesos.Salida;
+
 /**
  * Clase principal que gestiona la ejecución del programa de la agencia de
  * vuelos. Esta clase se encarga de la interacción con el usuario,

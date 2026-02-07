@@ -1,5 +1,12 @@
 import java.util.ArrayList;
 
+import monitor.Monitor;
+import petri.AlfaYBeta;
+import petri.Politica;
+import petri.PoliticaAgenciaVuelo;
+import petri.PoliticaInexistenteException;
+import petri.RedDePetri;
+
 public class ConfiguracionInicial {
     private int numero_politica;
     private Politica politica;

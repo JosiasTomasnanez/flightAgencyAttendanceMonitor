@@ -1,3 +1,7 @@
+package procesos;
+
+import monitor.MonitorInterface;
+
 public class Salida implements Runnable {
     private final MonitorInterface monitor;
 

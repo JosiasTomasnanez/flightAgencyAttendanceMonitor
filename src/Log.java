@@ -2,6 +2,8 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import petri.RedDePetri;
+
 /**
  * La clase {@code Log} se encarga de registrar información sobre el estado del
  * sistema en un archivo de log. Implementa {@code Runnable} para permitir
