@@ -1,4 +1,14 @@
 import java.util.ArrayList;
+
+import monitor.Monitor;
+import pantalla.PantallaCarga;
+import procesos.AtencionAgente;
+import procesos.Cancelacion;
+import procesos.ConfirmacionYPago;
+import procesos.EntradaDeClientes;
+import procesos.NumeroDeAgente;
+import procesos.Salida;
+
 /**
  * Clase principal que gestiona la ejecución del programa de la agencia de
  * vuelos. Esta clase se encarga de la interacción con el usuario,
@@ -12,6 +22,7 @@ public class Main {
   public static final int CANTIDAD_HILOS_CANCELACION = 1;
   public static final int CANTIDAD_HILOS_CONFIRMACION = 1;
   public static final int CANTIDAD_HILOS_GEN_CLIENTES = 5;
+  public static final int CANTIDAD_HILOS_SALIDA = 5;
 
   public static void main(String[] args) {
 
@@ -50,7 +61,10 @@ public class Main {
       hilos.add(factory.newThread(new ConfirmacionYPago(Monitor.getInstance())));
     }
 
-    
+    // 1 Hilo encargado de la confirmacion y pago
+    for (int i = 0; i < CANTIDAD_HILOS_SALIDA; i++) {
+      hilos.add(factory.newThread(new Salida(Monitor.getInstance())));
+    }
 
     // Hilo encargado del Log
     hilos.add(factory.newThread(new Log(configuracionInicial.getRedDePetri())));
