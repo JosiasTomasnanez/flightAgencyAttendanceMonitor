@@ -92,11 +92,7 @@ public class RedDePetri {
         return matrizIncidencia[0].length;
     }
 
-    public boolean dispararTransicion(int t) {
-        // Verificar si la transición está sensibilizada
-        if (!sensibilizado(t))
-            return false;
-
+    public void dispararTransicion(int t) {
         if (t == 11) { // Simulación T11 especial
             clientesSalientes++;
             PantallaCarga.incrementarPorcentaje(maxClient);
@@ -108,9 +104,7 @@ public class RedDePetri {
         if (comprobarTermino()) {
             termino = true;
             PantallaCarga.cerrar();
-            return false;
         }
-        return true;
     }
 
     public String getSecuencia() {

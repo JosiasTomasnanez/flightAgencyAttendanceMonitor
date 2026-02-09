@@ -53,7 +53,7 @@ public class AlfaYBeta {
         this.iniciado = true;
     }
 
-    public Estado verificar() {
+    public Estado verificarVentana() {
         if (sinRestriccion)
             return Estado.OK;
 

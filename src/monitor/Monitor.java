@@ -102,15 +102,16 @@ public class Monitor implements MonitorInterface {
             // sencibilizada (!true = false), se duerme
             // Si es la transicion que llamo la politica (!true = false), y esta
             // sencibilizada (!true = false), no entra al while y despierta hilos
-            while (!Comprobar_condiciones(t) || !politicaAdmite(t) || !redDePetri.dispararTransicion(t)) {
-
+            while (!estaSensibilizada(t) || !politicaAdmite(t)) {
                 if (redDePetri.isTermino()) {
                     notificarATodos();
-                    transicionAdespertar = -1;
                     return false;
                 }
                 getCondition(t).await();
+               
             }
+            redDePetri.dispararTransicion(t);
+
 
             actualizarAlfaYBeta(t);
 
@@ -125,13 +126,14 @@ public class Monitor implements MonitorInterface {
         return true;
     }
 
-    private boolean Comprobar_condiciones(int transicion) throws InterruptedException {
-        // Se corrobora que este sensibilizada primero
+    private boolean estaSensibilizada(int transicion) throws InterruptedException {
+        // Se corrobora que este sensibilizada primero por token
         if (!redDePetri.sensibilizado(transicion)) {
-            // Si no esta sensibilizado, no se sigue ejecutando
+            // Si no esta sensibilizado por token, no se sigue ejecutando
             return false;
         }
-        switch (alfaYBetas.get(transicion).verificar()) {
+        //comprueba sensibilizacion por ventana de tiempo
+        switch (alfaYBetas.get(transicion).verificarVentana()) {
             case ALFA -> {
                 long inicio = alfaYBetas.get(transicion).getInicio();
                 long transcurrido = System.currentTimeMillis() - inicio;
@@ -140,7 +142,7 @@ public class Monitor implements MonitorInterface {
                 if (faltante > 0) {
                     getCondition(transicion).await(faltante, TimeUnit.MILLISECONDS);
                 }
-                return false; // Después de dormir, vuelve a verificar
+                return true; 
             }
             case BETA, OK -> {
                 return true; // Si está en estado BETA o OK, los tiempos se cumplen
