@@ -2,6 +2,8 @@ import java.io.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import petri.RedDePetri;
+
 /**
  * La clase {@code Log} se encarga de registrar información sobre el estado del
  * sistema en un archivo de log. Implementa {@code Runnable} para permitir
@@ -95,13 +97,10 @@ public class Log implements Runnable {
                 + contarTransiciones(redDePetri.getSecuencia(), "T7")
                 + "\n"
                 + "clientes que salieron en total: "
-                + redDePetri.getMarcado()[14]
+                + redDePetri.getClientesSalientes()
                 + "\n");
         imprimirTransiciones();
         comprobarSecuencia();
-        pw.println(
-            "\nErrores de beta(Exceso de tiempo en espera para un disparo):\n"
-                + redDePetri.getBetaErrors());
         return;
       }
       int[] marcado = redDePetri.getMarcado();
@@ -134,7 +133,7 @@ public class Log implements Runnable {
               + marcado[12]
               + "\n"
               + "Clientes saliente: "
-              + marcado[14]
+              + redDePetri.getClientesSalientes()
               + "\n");
       try {
         Thread.sleep(250); // Duracion del proceso
