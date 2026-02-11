@@ -13,7 +13,7 @@ participant SensibilizadoConTiempo
 ' Secuencia
 '' El hilo intenta disparar una Transicion
 activate Hilo1
-Hilo1 -> Monitor : fireTransition(Tn)
+Hilo1 -> Monitor : dispararTransicion(Tn)
 note left: El hilo intenta disparar la transicion Tn
 activate Monitor
 
@@ -29,55 +29,21 @@ activate Monitor
 deactivate Monitor
 
 loop k==true
-    Monitor -> Red_de_petri : dispararTransicion(Tn)
-    activate Red_de_petri
-    Red_de_petri -> Red_de_petri : sensibilizado(Tn)
+    Monitor -> Red_de_petri : disparar(Tn)
     note left 
     Le indica a la red 
     que transicion se dispara
     end note
-    ''activate Red_de_petri
+    activate Red_de_petri
     Red_de_petri --> Monitor : se_disparo
     alt se_disparo == true
-        Monitor -> Red_de_petri : verificarConflicto()
-        Red_de_petri -> Politicas : llamadaPolitica()
-        activate Politicas
-        Politicas --> Red_de_petri : Tn (a despertar)
-        deactivate Politicas
-        Red_de_petri --> Monitor : Tn
-        
-        alt Tn >= 0
-            Monitor -> Colas : notificar(Tn)
-            activate Colas
-            deactivate Colas
-        else Tn < 0
-          Monitor -> Red_de_petri : getSensibilizados()
-          Red_de_petri --> Monitor : Vs
-            Monitor -> Colas : notificar(Vs)
-            activate Colas
-            Colas --> Monitor
-            deactivate Colas  
-        end 
-        Monitor -> Mutex : release()
-        activate Mutex
-        Mutex --> Monitor
-        deactivate Mutex
-        Monitor --> Hilo1 : Sale del monitor
-        deactivate Hilo1
-        Monitor -> Hilo2 : se activa el hilo
-        activate Hilo2
-        /'Monitor -> Red_de_petri : getSensibilizados()
+        Monitor -> Red_de_petri : sensibilizadas()
         note right
         Devuelve un vector
         con las transiciones sencibilizadas
         despues del cambio de estado
         end note
         Red_de_petri --> Monitor : Vs
-        Monitor -> Colas : notificar(Vs)
-        activate Colas
-        Colas --> Monitor
-        deactivate Colas
-        /'
         Monitor -> Colas : quienesEstan()
         activate Colas
         note right
@@ -112,16 +78,11 @@ loop k==true
             activate Monitor
             deactivate Monitor
         end
-        '/
     else se_disparo == false
         Monitor -> Mutex : release()
         activate Mutex
         Mutex --> Monitor
         deactivate Mutex
-        Monitor -> Colas : dormirHilo()
-        activate Colas
-        Colas --> Monitor
-        deactivate Colas
         Monitor-> Colas : acquire()
         activate Colas
         Colas --> Monitor

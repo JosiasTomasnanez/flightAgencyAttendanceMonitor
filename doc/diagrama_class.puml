@@ -53,6 +53,12 @@ class EntradaDeClientes <<Runnable>>{
     + String toString()
 }
 
+class Salida <<Runnable>>{
+    - MonitorInterface monitor
+    + Salida(MonitorInterface monitor)
+    + void run()
+}
+
 class Log <<Runnable>>{
     - long tiempo
     - FileWriter file
@@ -117,7 +123,7 @@ interface Politica{
 
 class PoliticaAgenciaVuelo <<Politica>>{
     POLITICA_1
-    POLITICA_2
+    POLITICA_2  
     - int codigo
     - String descripcion
     -  int numeroPolitica
@@ -158,6 +164,7 @@ AtencionAgente --> MonitorInterface : monitor
 Cancelacion --> MonitorInterface : monitor
 ConfirmacionYPago --> MonitorInterface : monitor
 EntradaDeClientes --> MonitorInterface : monitor
+Salida --> MonitorInterface : monitor
 Log --> RedDePetri : redDePetri
 Monitor --> RedDePetri : redDePetri
 Monitor --> Politica : politica
@@ -174,6 +181,7 @@ Main --> AtencionAgente : crea hilos de agentes
 Main --> Cancelacion : crea hilo
 Main --> ConfirmacionYPago : crea hilo
 Main --> EntradaDeClientes : crea hilos
+Main --> Salida : crea hilo
 Main --> Log : crea hilo
 
 @enduml
