@@ -122,7 +122,7 @@ public class RedDePetri {
     public int consultarPolitica(List<Integer> candidatos) {
         // si no hay conflicto o no hay hilos candidatos, se manda -1 para que compitan
         // por el mutex
-        if (candidatos.isEmpty() || !compartenLugaresDeEntrada(candidatos)) {
+        if (!compartenLugaresDeEntrada(candidatos)) {
             return -1; // No hay candidatos activos
         }
 

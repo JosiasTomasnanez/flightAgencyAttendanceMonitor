@@ -181,6 +181,11 @@ public class Monitor implements MonitorInterface {
                 candidatos.add(t);
         }
 
+        if (candidatos.isEmpty()) {
+            transicionAdespertar = -1;
+            return;
+        }
+
         // Le pido a la red de petri que consulte por su politica
         transicionAdespertar = redDePetri.consultarPolitica(candidatos);
         if (transicionAdespertar >= 0) {
