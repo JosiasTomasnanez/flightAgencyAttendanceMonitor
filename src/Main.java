@@ -22,7 +22,7 @@ public class Main {
   public static final int CANTIDAD_HILOS_CANCELACION = 1;
   public static final int CANTIDAD_HILOS_CONFIRMACION = 1;
   public static final int CANTIDAD_HILOS_GEN_CLIENTES = 5;
-  public static final int CANTIDAD_HILOS_SALIDA = 5;
+  public static final int CANTIDAD_HILOS_SALIDA = 2;
 
   public static void main(String[] args) {
 
