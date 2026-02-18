@@ -72,11 +72,11 @@ public class ConfiguracionInicial {
         for (int i = 0; matrizIncidencia[0].length > i; i++) {
             alfaYBetas.add(new AlfaYBeta());
         }
-        alfaYBetas.get(1).setAlfaYBeta(8, 151);
-        alfaYBetas.get(4).setAlfaYBeta(24, 141);
-        alfaYBetas.get(5).setAlfaYBeta(24, 141);
-        alfaYBetas.get(8).setAlfaYBeta(16, 90);
-        alfaYBetas.get(9).setAlfaYBeta(20, 40);
-        alfaYBetas.get(10).setAlfaYBeta(24, 70);
+        alfaYBetas.get(1).setAlfaYBeta(8, 1000000);
+        alfaYBetas.get(4).setAlfaYBeta(24, 1000000);
+        alfaYBetas.get(5).setAlfaYBeta(24, 1000000);
+        alfaYBetas.get(8).setAlfaYBeta(16, 1000000);
+        alfaYBetas.get(9).setAlfaYBeta(20, 1000000);
+        alfaYBetas.get(10).setAlfaYBeta(24, 1000000);
     }
 }
