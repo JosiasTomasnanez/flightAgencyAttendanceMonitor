@@ -101,12 +101,13 @@ public class Monitor implements MonitorInterface {
             // Si no es la transicion que llamo la politica (!false = true), y esta
             // sencibilizada (!true = false), se duerme
             // Si es la transicion que llamo la politica (!true = false), y esta
-            // sencibilizada (!true = false), no entra al while y despierta hilos
+            // sencibilizada (!true = false), dispara y analiza la politica para ver quien sigue
             while (!estaSensibilizada(t) || !politicaAdmite(t)) {
                 if (redDePetri.isTermino()) {
                     notificarATodos();
                     return false;
                 }
+
                 getCondition(t).await();
                
             }
@@ -142,13 +143,13 @@ public class Monitor implements MonitorInterface {
                 if (faltante > 0) {
                     getCondition(transicion).await(faltante, TimeUnit.MILLISECONDS);
                 }
-                return true; 
+                return redDePetri.sensibilizado(transicion)
+                && alfaYBetas.get(transicion).verificarVentana() != AlfaYBeta.Estado.ALFA; 
             }
-            case BETA, OK -> {
+            default -> {
                 return true; // Si está en estado BETA o OK, los tiempos se cumplen
             }
         }
-        return false;
     }
 
     private void actualizarAlfaYBeta(int transicionDisparada) {
